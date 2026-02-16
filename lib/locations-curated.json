@@ -1,0 +1,1201 @@
+{
+  "success": true,
+  "count": 170,
+  "locations": [
+    {
+      "location_code": 2032,
+      "location_name": "Argentina",
+      "location_code_parent": null,
+      "country_iso_code": "AR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2036,
+      "location_name": "Australia",
+      "location_code_parent": null,
+      "country_iso_code": "AU",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2040,
+      "location_name": "Austria",
+      "location_code_parent": null,
+      "country_iso_code": "AT",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2056,
+      "location_name": "Belgium",
+      "location_code_parent": null,
+      "country_iso_code": "BE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2076,
+      "location_name": "Brazil",
+      "location_code_parent": null,
+      "country_iso_code": "BR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2100,
+      "location_name": "Bulgaria",
+      "location_code_parent": null,
+      "country_iso_code": "BG",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2124,
+      "location_name": "Canada",
+      "location_code_parent": null,
+      "country_iso_code": "CA",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2152,
+      "location_name": "Chile",
+      "location_code_parent": null,
+      "country_iso_code": "CL",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2156,
+      "location_name": "China",
+      "location_code_parent": null,
+      "country_iso_code": "CN",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2170,
+      "location_name": "Colombia",
+      "location_code_parent": null,
+      "country_iso_code": "CO",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2191,
+      "location_name": "Croatia",
+      "location_code_parent": null,
+      "country_iso_code": "HR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2203,
+      "location_name": "Czechia",
+      "location_code_parent": null,
+      "country_iso_code": "CZ",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2208,
+      "location_name": "Denmark",
+      "location_code_parent": null,
+      "country_iso_code": "DK",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2218,
+      "location_name": "Ecuador",
+      "location_code_parent": null,
+      "country_iso_code": "EC",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2818,
+      "location_name": "Egypt",
+      "location_code_parent": null,
+      "country_iso_code": "EG",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2233,
+      "location_name": "Estonia",
+      "location_code_parent": null,
+      "country_iso_code": "EE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2231,
+      "location_name": "Ethiopia",
+      "location_code_parent": null,
+      "country_iso_code": "ET",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2242,
+      "location_name": "Fiji",
+      "location_code_parent": null,
+      "country_iso_code": "FJ",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2246,
+      "location_name": "Finland",
+      "location_code_parent": null,
+      "country_iso_code": "FI",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2250,
+      "location_name": "France",
+      "location_code_parent": null,
+      "country_iso_code": "FR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2258,
+      "location_name": "French Polynesia",
+      "location_code_parent": null,
+      "country_iso_code": "PF",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2268,
+      "location_name": "Georgia",
+      "location_code_parent": null,
+      "country_iso_code": "GE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2276,
+      "location_name": "Germany",
+      "location_code_parent": null,
+      "country_iso_code": "DE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2288,
+      "location_name": "Ghana",
+      "location_code_parent": null,
+      "country_iso_code": "GH",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2300,
+      "location_name": "Greece",
+      "location_code_parent": null,
+      "country_iso_code": "GR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2348,
+      "location_name": "Hungary",
+      "location_code_parent": null,
+      "country_iso_code": "HU",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2356,
+      "location_name": "India",
+      "location_code_parent": null,
+      "country_iso_code": "IN",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2360,
+      "location_name": "Indonesia",
+      "location_code_parent": null,
+      "country_iso_code": "ID",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2372,
+      "location_name": "Ireland",
+      "location_code_parent": null,
+      "country_iso_code": "IE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2376,
+      "location_name": "Israel",
+      "location_code_parent": null,
+      "country_iso_code": "IL",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2380,
+      "location_name": "Italy",
+      "location_code_parent": null,
+      "country_iso_code": "IT",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2392,
+      "location_name": "Japan",
+      "location_code_parent": null,
+      "country_iso_code": "JP",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2398,
+      "location_name": "Kazakhstan",
+      "location_code_parent": null,
+      "country_iso_code": "KZ",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2404,
+      "location_name": "Kenya",
+      "location_code_parent": null,
+      "country_iso_code": "KE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2428,
+      "location_name": "Latvia",
+      "location_code_parent": null,
+      "country_iso_code": "LV",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2440,
+      "location_name": "Lithuania",
+      "location_code_parent": null,
+      "country_iso_code": "LT",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2458,
+      "location_name": "Malaysia",
+      "location_code_parent": null,
+      "country_iso_code": "MY",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2484,
+      "location_name": "Mexico",
+      "location_code_parent": null,
+      "country_iso_code": "MX",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2504,
+      "location_name": "Morocco",
+      "location_code_parent": null,
+      "country_iso_code": "MA",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2528,
+      "location_name": "Netherlands",
+      "location_code_parent": null,
+      "country_iso_code": "NL",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2540,
+      "location_name": "New Caledonia",
+      "location_code_parent": null,
+      "country_iso_code": "NC",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2554,
+      "location_name": "New Zealand",
+      "location_code_parent": null,
+      "country_iso_code": "NZ",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2566,
+      "location_name": "Nigeria",
+      "location_code_parent": null,
+      "country_iso_code": "NG",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2578,
+      "location_name": "Norway",
+      "location_code_parent": null,
+      "country_iso_code": "NO",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2598,
+      "location_name": "Papua New Guinea",
+      "location_code_parent": null,
+      "country_iso_code": "PG",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2600,
+      "location_name": "Paraguay",
+      "location_code_parent": null,
+      "country_iso_code": "PY",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2604,
+      "location_name": "Peru",
+      "location_code_parent": null,
+      "country_iso_code": "PE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2608,
+      "location_name": "Philippines",
+      "location_code_parent": null,
+      "country_iso_code": "PH",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2616,
+      "location_name": "Poland",
+      "location_code_parent": null,
+      "country_iso_code": "PL",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2620,
+      "location_name": "Portugal",
+      "location_code_parent": null,
+      "country_iso_code": "PT",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2642,
+      "location_name": "Romania",
+      "location_code_parent": null,
+      "country_iso_code": "RO",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2682,
+      "location_name": "Saudi Arabia",
+      "location_code_parent": null,
+      "country_iso_code": "SA",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2702,
+      "location_name": "Singapore",
+      "location_code_parent": null,
+      "country_iso_code": "SG",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2703,
+      "location_name": "Slovakia",
+      "location_code_parent": null,
+      "country_iso_code": "SK",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2705,
+      "location_name": "Slovenia",
+      "location_code_parent": null,
+      "country_iso_code": "SI",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2710,
+      "location_name": "South Africa",
+      "location_code_parent": null,
+      "country_iso_code": "ZA",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2410,
+      "location_name": "South Korea",
+      "location_code_parent": null,
+      "country_iso_code": "KR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2724,
+      "location_name": "Spain",
+      "location_code_parent": null,
+      "country_iso_code": "ES",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2752,
+      "location_name": "Sweden",
+      "location_code_parent": null,
+      "country_iso_code": "SE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2756,
+      "location_name": "Switzerland",
+      "location_code_parent": null,
+      "country_iso_code": "CH",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2834,
+      "location_name": "Tanzania",
+      "location_code_parent": null,
+      "country_iso_code": "TZ",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2764,
+      "location_name": "Thailand",
+      "location_code_parent": null,
+      "country_iso_code": "TH",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2788,
+      "location_name": "Tunisia",
+      "location_code_parent": null,
+      "country_iso_code": "TN",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2792,
+      "location_name": "Turkiye",
+      "location_code_parent": null,
+      "country_iso_code": "TR",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2800,
+      "location_name": "Uganda",
+      "location_code_parent": null,
+      "country_iso_code": "UG",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2804,
+      "location_name": "Ukraine",
+      "location_code_parent": null,
+      "country_iso_code": "UA",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2784,
+      "location_name": "United Arab Emirates",
+      "location_code_parent": null,
+      "country_iso_code": "AE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2826,
+      "location_name": "United Kingdom",
+      "location_code_parent": null,
+      "country_iso_code": "GB",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2840,
+      "location_name": "United States",
+      "location_code_parent": null,
+      "country_iso_code": "US",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2858,
+      "location_name": "Uruguay",
+      "location_code_parent": null,
+      "country_iso_code": "UY",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2860,
+      "location_name": "Uzbekistan",
+      "location_code_parent": null,
+      "country_iso_code": "UZ",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2862,
+      "location_name": "Venezuela",
+      "location_code_parent": null,
+      "country_iso_code": "VE",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 2704,
+      "location_name": "Vietnam",
+      "location_code_parent": null,
+      "country_iso_code": "VN",
+      "location_type": "Country"
+    },
+    {
+      "location_code": 21133,
+      "location_name": "Alabama,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21132,
+      "location_name": "Alaska,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21136,
+      "location_name": "Arizona,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21135,
+      "location_name": "Arkansas,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21137,
+      "location_name": "California,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21138,
+      "location_name": "Colorado,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21139,
+      "location_name": "Connecticut,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21141,
+      "location_name": "Delaware,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21140,
+      "location_name": "District of Columbia,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21142,
+      "location_name": "Florida,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21143,
+      "location_name": "Georgia,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21144,
+      "location_name": "Hawaii,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21146,
+      "location_name": "Idaho,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21147,
+      "location_name": "Illinois,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21148,
+      "location_name": "Indiana,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21145,
+      "location_name": "Iowa,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21149,
+      "location_name": "Kansas,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21150,
+      "location_name": "Kentucky,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21151,
+      "location_name": "Louisiana,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21154,
+      "location_name": "Maine,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21153,
+      "location_name": "Maryland,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21152,
+      "location_name": "Massachusetts,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21155,
+      "location_name": "Michigan,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21156,
+      "location_name": "Minnesota,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21158,
+      "location_name": "Mississippi,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21157,
+      "location_name": "Missouri,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21159,
+      "location_name": "Montana,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21162,
+      "location_name": "Nebraska,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21166,
+      "location_name": "Nevada,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21163,
+      "location_name": "New Hampshire,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21164,
+      "location_name": "New Jersey,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21165,
+      "location_name": "New Mexico,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21167,
+      "location_name": "New York,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21160,
+      "location_name": "North Carolina,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21161,
+      "location_name": "North Dakota,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21168,
+      "location_name": "Ohio,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21169,
+      "location_name": "Oklahoma,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21170,
+      "location_name": "Oregon,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21171,
+      "location_name": "Pennsylvania,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21172,
+      "location_name": "Rhode Island,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21173,
+      "location_name": "South Carolina,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21174,
+      "location_name": "South Dakota,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21175,
+      "location_name": "Tennessee,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21176,
+      "location_name": "Texas,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21177,
+      "location_name": "Utah,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21179,
+      "location_name": "Vermont,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21178,
+      "location_name": "Virginia,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21180,
+      "location_name": "Washington,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21183,
+      "location_name": "West Virginia,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21182,
+      "location_name": "Wisconsin,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 21184,
+      "location_name": "Wyoming,United States",
+      "location_code_parent": 2840,
+      "country_iso_code": "US",
+      "location_type": "State"
+    },
+    {
+      "location_code": 1022494,
+      "location_name": "Albuquerque,New Mexico,United States",
+      "location_code_parent": 21165,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1015254,
+      "location_name": "Atlanta,Georgia,United States",
+      "location_code_parent": 21143,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026201,
+      "location_name": "Austin,Texas,United States",
+      "location_code_parent": 21176,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1018511,
+      "location_name": "Baltimore,Maryland,United States",
+      "location_code_parent": 21153,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1018127,
+      "location_name": "Boston,Massachusetts,United States",
+      "location_code_parent": 21152,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1021048,
+      "location_name": "Charlotte,North Carolina,United States",
+      "location_code_parent": 21160,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1016367,
+      "location_name": "Chicago,Illinois,United States",
+      "location_code_parent": 21147,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1023626,
+      "location_name": "Cincinnati,Ohio,United States",
+      "location_code_parent": 21168,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1023631,
+      "location_name": "Cleveland,Ohio,United States",
+      "location_code_parent": 21168,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1023640,
+      "location_name": "Columbus,Ohio,United States",
+      "location_code_parent": 21168,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026339,
+      "location_name": "Dallas,Texas,United States",
+      "location_code_parent": 21176,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1014485,
+      "location_name": "Denver,Colorado,United States",
+      "location_code_parent": 21138,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1019250,
+      "location_name": "Detroit,Michigan,United States",
+      "location_code_parent": 21155,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026411,
+      "location_name": "Fort Worth,Texas,United States",
+      "location_code_parent": 21176,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1013804,
+      "location_name": "Fresno,California,United States",
+      "location_code_parent": 21137,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026481,
+      "location_name": "Houston,Texas,United States",
+      "location_code_parent": 21176,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1017146,
+      "location_name": "Indianapolis,Indiana,United States",
+      "location_code_parent": 21148,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1015067,
+      "location_name": "Jacksonville,Florida,United States",
+      "location_code_parent": 21142,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1020414,
+      "location_name": "Kansas City,Missouri,United States",
+      "location_code_parent": 21157,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1022639,
+      "location_name": "Las Vegas,Nevada,United States",
+      "location_code_parent": 21166,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 9197757,
+      "location_name": "Las Vegas,Nevada,United States",
+      "location_code_parent": 21166,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1013962,
+      "location_name": "Los Angeles,California,United States",
+      "location_code_parent": 21137,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1013445,
+      "location_name": "Mesa,Arizona,United States",
+      "location_code_parent": 21136,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1015116,
+      "location_name": "Miami,Florida,United States",
+      "location_code_parent": 21142,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1028087,
+      "location_name": "Milwaukee,Wisconsin,United States",
+      "location_code_parent": 21182,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1019973,
+      "location_name": "Minneapolis,Minnesota,United States",
+      "location_code_parent": 21156,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026083,
+      "location_name": "Nashville,Tennessee,United States",
+      "location_code_parent": 21175,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1023191,
+      "location_name": "New York,New York,United States",
+      "location_code_parent": 21167,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1021721,
+      "location_name": "Omaha,Nebraska,United States",
+      "location_code_parent": 21162,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1015150,
+      "location_name": "Orlando,Florida,United States",
+      "location_code_parent": 21142,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1025197,
+      "location_name": "Philadelphia,Pennsylvania,United States",
+      "location_code_parent": 21171,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1013462,
+      "location_name": "Phoenix,Arizona,United States",
+      "location_code_parent": 21136,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1025202,
+      "location_name": "Pittsburgh,Pennsylvania,United States",
+      "location_code_parent": 21171,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1024543,
+      "location_name": "Portland,Oregon,United States",
+      "location_code_parent": 21170,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1021278,
+      "location_name": "Raleigh,North Carolina,United States",
+      "location_code_parent": 21160,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1014208,
+      "location_name": "Sacramento,California,United States",
+      "location_code_parent": 21137,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026990,
+      "location_name": "Salt Lake City,Utah,United States",
+      "location_code_parent": 21177,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1026759,
+      "location_name": "San Antonio,Texas,United States",
+      "location_code_parent": 21176,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1014218,
+      "location_name": "San Diego,California,United States",
+      "location_code_parent": 21137,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1014221,
+      "location_name": "San Francisco,California,United States",
+      "location_code_parent": 21137,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1014226,
+      "location_name": "San Jose,California,United States",
+      "location_code_parent": 21137,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1027744,
+      "location_name": "Seattle,Washington,United States",
+      "location_code_parent": 21180,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1020618,
+      "location_name": "St. Louis,Missouri,United States",
+      "location_code_parent": 21157,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1015214,
+      "location_name": "Tampa,Florida,United States",
+      "location_code_parent": 21142,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1013509,
+      "location_name": "Tucson,Arizona,United States",
+      "location_code_parent": 21136,
+      "country_iso_code": "US",
+      "location_type": "City"
+    },
+    {
+      "location_code": 1014895,
+      "location_name": "Washington,District of Columbia,United States",
+      "location_code_parent": 21140,
+      "country_iso_code": "US",
+      "location_type": "City"
+    }
+  ],
+  "metadata": {
+    "generated": "2026-02-06T02:17:18.464Z",
+    "description": "Curated list of countries, US states, and major US cities for keyword research",
+    "source": "DataForSEO API v3"
+  }
+}

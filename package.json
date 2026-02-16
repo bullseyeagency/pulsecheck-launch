@@ -1,0 +1,39 @@
+{
+  "name": "pulsecheck-launch",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3014",
+    "build": "next build",
+    "start": "next start -p 3014",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.2.0",
+    "@stripe/stripe-js": "^4.10.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.34.0",
+    "google-ads-api": "^23.0.0",
+    "lucide-react": "^0.564.0",
+    "next": "16.1.6",
+    "next-auth": "^5.0.0-beta.25",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.0",
+    "stripe": "^17.5.0",
+    "tailwind-merge": "^3.4.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "autoprefixer": "^10.4.24",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "16.1.6",
+    "postcss": "^8.4.49",
+    "prisma": "^6.2.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.7.2"
+  }
+}
