@@ -73,21 +73,22 @@ export async function createCampaign(
   const customer = getCustomer(customerId);
 
   // Create campaign budget
-  const budgetResourceName = await customer.campaignBudgets.create({
-    name: `${campaignData.name} Budget`,
+  const budgetResult = await customer.campaignBudgets.create([{
     amount_micros: campaignData.budget * 1_000_000, // Convert to micros
     delivery_method: 'STANDARD',
-  });
+  }]);
+  const budgetResourceName = budgetResult.results[0].resource_name;
 
   // Create campaign
-  const campaign = await customer.campaigns.create({
+  const campaignResult = await customer.campaigns.create([{
     name: campaignData.name,
     status: 'PAUSED', // Start paused for review
     advertising_channel_type: 'SEARCH',
     campaign_budget: budgetResourceName,
-    start_date: campaignData.startDate.replace(/-/g, ''),
-    end_date: campaignData.endDate?.replace(/-/g, ''),
-  });
+    // Note: start_date and end_date are not supported in create operation
+    // Use campaign.update() to set dates after creation if needed
+  }]);
+  const campaign = campaignResult.results[0].resource_name;
 
   return campaign;
 }
@@ -105,15 +106,15 @@ export async function createAdGroup(
 ) {
   const customer = getCustomer(customerId);
 
-  const adGroup = await customer.adGroups.create({
+  const adGroupResult = await customer.adGroups.create([{
     name: adGroupData.name,
     campaign: campaignResourceName,
     status: 'ENABLED',
     type: 'SEARCH_STANDARD',
     cpc_bid_micros: adGroupData.cpcBidMicros,
-  });
+  }]);
 
-  return adGroup;
+  return adGroupResult.results[0].resource_name;
 }
 
 /**
@@ -130,7 +131,7 @@ export async function createResponsiveSearchAd(
 ) {
   const customer = getCustomer(customerId);
 
-  const ad = await customer.adGroupAds.create({
+  const adResult = await customer.adGroupAds.create([{
     ad_group: adGroupResourceName,
     status: 'ENABLED',
     ad: {
@@ -140,9 +141,9 @@ export async function createResponsiveSearchAd(
         descriptions: adData.descriptions.map((text) => ({ text })),
       },
     },
-  });
+  }]);
 
-  return ad;
+  return adResult.results[0].resource_name;
 }
 
 /**
@@ -162,7 +163,7 @@ export async function addKeywords(
       text: keyword.text,
       match_type: keyword.matchType,
     },
-  }));
+  })) as any; // TypeScript workaround for google-ads-api type definitions
 
   const result = await customer.adGroupCriteria.create(operations);
   return result;
