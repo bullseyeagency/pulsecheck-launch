@@ -305,7 +305,7 @@ export default function CampaignDetailPage() {
     }).format(amount);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | number) => {
     switch (status) {
       case 'ENABLED':
       case 2:
