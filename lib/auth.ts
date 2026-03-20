@@ -92,7 +92,18 @@ export const authConfig: NextAuthConfig = {
       console.log("New user created:", user.email);
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: true,
+  logger: {
+    error(code, ...message) {
+      console.error("[NEXTAUTH ERROR]", code, JSON.stringify(message));
+    },
+    warn(code) {
+      console.warn("[NEXTAUTH WARN]", code);
+    },
+    debug(code, ...message) {
+      console.log("[NEXTAUTH DEBUG]", code, JSON.stringify(message));
+    },
+  },
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
