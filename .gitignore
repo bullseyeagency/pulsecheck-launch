@@ -26,6 +26,9 @@ yarn-error.log*
 .env
 .env*.local
 
+# Service account keys
+pulsecheck-*.json
+
 # Vercel
 .vercel
 

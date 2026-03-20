@@ -1,0 +1,63 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { keywords, location_code = 2840 } = body as {
+      keywords: string[];
+      location_code?: number;
+    };
+
+    if (!keywords?.length) {
+      return NextResponse.json({ error: 'keywords are required' }, { status: 400 });
+    }
+
+    const login = process.env.DATAFORSEO_LOGIN || '';
+    const password = process.env.DATAFORSEO_PASSWORD || '';
+    const authHeader = Buffer.from(`${login}:${password}`).toString('base64');
+
+    const payload = [
+      {
+        keywords: keywords.slice(0, 50),
+        location_code,
+        language_code: 'en',
+      },
+    ];
+
+    const response = await fetch(
+      'https://api.dataforseo.com/v3/ai_optimization/ai_keyword_data/keywords_search_volume/live',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${authHeader}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    console.log('DataForSEO AI keyword volume response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`DataForSEO API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('DataForSEO AI keyword volume:', data.tasks?.[0]?.status_code, data.tasks?.[0]?.status_message);
+    const results = data.tasks?.[0]?.result || [];
+
+    return NextResponse.json({ results });
+  } catch (error: any) {
+    console.error('Error fetching AI keyword volume:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch AI keyword volume' },
+      { status: 500 }
+    );
+  }
+}

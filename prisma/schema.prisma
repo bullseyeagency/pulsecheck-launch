@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // Multi-tenant: Organizations
@@ -16,9 +16,10 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   // Relations
-  users         User[]
-  subscriptions Subscription[]
-  googleAdsAccounts GoogleAdsAccount[]
+  users              User[]
+  subscriptions      Subscription[]
+  googleAdsAccounts  GoogleAdsAccount[]
+  googleAdsConnections GoogleAdsConnection[]
 }
 
 // Users (belongs to Organization)
@@ -31,9 +32,9 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  // Multi-tenant
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  // Multi-tenant (optional during creation, assigned in onboarding)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   role           String @default("member") // owner, admin, member
 
   // Auth
@@ -111,4 +112,45 @@ model GoogleAdsAccount {
   updatedAt        DateTime @updatedAt
 
   @@unique([organizationId, accountId])
+}
+
+// GSC URL Inspection Log
+model GscInspection {
+  id            String   @id @default(cuid())
+  siteUrl       String
+  pageUrl       String
+  verdict       String   // PASS, PARTIAL, FAIL, NEUTRAL, ERROR
+  coverageState String?
+  lastCrawlTime String?
+  crawledAs     String?
+  robotsTxtState String?
+  indexingState  String?
+  checkedAt     DateTime @default(now())
+
+  @@index([siteUrl, pageUrl])
+  @@index([siteUrl, checkedAt])
+}
+
+// Google Ads API OAuth Connection (stores refresh tokens per organization)
+model GoogleAdsConnection {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // OAuth tokens
+  refreshToken   String
+  accessToken    String?
+  expiresAt      DateTime?
+  scope          String?
+
+  // Google Ads account info
+  customerId     String   // Google Ads Customer ID
+  customerName   String?
+  loginCustomerId String? // Manager account ID if using MCC
+
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([organizationId, customerId])
 }

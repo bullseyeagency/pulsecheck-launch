@@ -17,9 +17,10 @@ interface NavBarProps {
   items: NavItem[]
   className?: string
   defaultActive?: string
+  onLogout?: () => void
 }
 
-export function AnimeNavBar({ items, className, defaultActive = "Home" }: NavBarProps) {
+export function AnimeNavBar({ items, className, defaultActive = "Home", onLogout }: NavBarProps) {
   const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
   const [hoveredTab, setHoveredTab] = useState<string | null>(null)
@@ -271,6 +272,47 @@ export function AnimeNavBar({ items, className, defaultActive = "Home" }: NavBar
               </Link>
             )
           })}
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className={cn(
+                "relative cursor-pointer text-sm font-semibold px-4 py-3 rounded-full transition-all duration-300",
+                "text-white/70 hover:text-white hover:bg-red-500/20 ml-2"
+              )}
+              title="Logout"
+            >
+              <motion.span
+                className="hidden md:inline relative z-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                Logout
+              </motion.span>
+              <motion.span
+                className="md:hidden relative z-10"
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+              </motion.span>
+            </button>
+          )}
         </motion.div>
       </div>
       <style jsx global>{`

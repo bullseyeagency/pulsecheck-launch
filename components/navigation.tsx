@@ -2,6 +2,7 @@
 
 import { Home, Zap, BarChart3, Settings } from "lucide-react";
 import { AnimeNavBar } from "@/components/ui/anime-navbar";
+import { signOut } from "next-auth/react";
 
 const navItems = [
   {
@@ -27,5 +28,15 @@ const navItems = [
 ];
 
 export function Navigation({ defaultActive = "Home" }: { defaultActive?: string }) {
-  return <AnimeNavBar items={navItems} defaultActive={defaultActive} />;
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
+  return (
+    <AnimeNavBar
+      items={navItems}
+      defaultActive={defaultActive}
+      onLogout={handleLogout}
+    />
+  );
 }

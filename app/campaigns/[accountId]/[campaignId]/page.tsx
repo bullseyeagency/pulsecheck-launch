@@ -272,10 +272,10 @@ export default function CampaignDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading campaign details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#EF5744] mx-auto"></div>
+          <p className="mt-4 text-[#a1a1aa]">Loading campaign details...</p>
         </div>
       </div>
     );
@@ -283,13 +283,13 @@ export default function CampaignDetailPage() {
 
   if (error || !campaign || !metrics) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
           <h2 className="text-red-800 font-semibold mb-2">Error</h2>
           <p className="text-red-600 text-sm mb-4">{error || 'Campaign not found'}</p>
           <button
             onClick={() => router.push(`/campaigns/${accountId}`)}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm text-[#EF5744] hover:text-[#EF5744] font-medium"
           >
             ← Back to Campaigns
           </button>
@@ -548,28 +548,28 @@ export default function CampaignDetailPage() {
     const [name, setName] = useState('');
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 max-w-md w-full">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Save Current View</h3>
+      <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+        <div className="bg-[#141414] rounded-lg p-6 max-w-md w-full border border-[#2a2a2a]">
+          <h3 className="text-lg font-semibold text-white mb-4">Save Current View</h3>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter view name (e.g., 'Zero Impressions', 'High Cost')"
-            className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg text-gray-900 mb-4"
+            className="w-full px-4 py-2 border-2 border-[#2a2a2a] rounded-lg text-white bg-[#141414] mb-4"
             autoFocus
           />
           <div className="flex gap-2 justify-end">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+              className="px-4 py-2 bg-[#2a2a2a] text-[#d4d4d8] rounded-lg hover:bg-[#3a3a3a]"
             >
               Cancel
             </button>
             <button
               onClick={() => name.trim() && onSave(name.trim())}
               disabled={!name.trim()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 bg-[#c93a2a] text-white rounded-lg hover:bg-[#a83020] disabled:opacity-50"
             >
               Save View
             </button>
@@ -596,11 +596,11 @@ export default function CampaignDetailPage() {
     const [value, setValue] = useState('0');
 
     return (
-      <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="flex items-center gap-2 p-3 bg-[rgba(239,87,68,0.04)] border border-[#EF5744] rounded-lg">
         <select
           value={field}
           onChange={(e) => setField(e.target.value)}
-          className="px-3 py-1 text-sm border-2 border-gray-400 rounded text-gray-900"
+          className="px-3 py-1 text-sm border-2 border-[#2a2a2a] rounded text-white bg-[#141414]"
         >
           {fields.map(f => (
             <option key={f.value} value={f.value}>{f.label}</option>
@@ -609,7 +609,7 @@ export default function CampaignDetailPage() {
         <select
           value={operator}
           onChange={(e) => setOperator(e.target.value as FilterOperator)}
-          className="px-3 py-1 text-sm border-2 border-gray-400 rounded text-gray-900"
+          className="px-3 py-1 text-sm border-2 border-[#2a2a2a] rounded text-white bg-[#141414]"
         >
           <option value="=">=</option>
           <option value="!=">≠</option>
@@ -622,18 +622,18 @@ export default function CampaignDetailPage() {
           type="number"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="px-3 py-1 w-24 text-sm border-2 border-gray-400 rounded text-gray-900"
+          className="px-3 py-1 w-24 text-sm border-2 border-[#2a2a2a] rounded text-white bg-[#141414]"
           placeholder="Value"
         />
         <button
           onClick={() => onAdd(field, operator, parseFloat(value))}
-          className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+          className="px-3 py-1 bg-[#c93a2a] text-white text-sm rounded hover:bg-[#a83020]"
         >
           Apply
         </button>
         <button
           onClick={onClose}
-          className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hover:bg-gray-400"
+          className="px-3 py-1 bg-[#2a2a2a] text-[#d4d4d8] text-sm rounded hover:bg-[#3a3a3a]"
         >
           Cancel
         </button>
@@ -642,22 +642,22 @@ export default function CampaignDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0a0a0a]">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-[#141414] border-b border-[#2a2a2a]">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-3 mb-4">
             <Link
               href={`/campaigns/${accountId}`}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-[#8b8b93] hover:text-[#a1a1aa]"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">{campaign.name}</h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <h1 className="text-3xl font-bold text-white">{campaign.name}</h1>
+              <p className="text-sm text-[#8b8b93] mt-1">
                 {account?.name} • Campaign ID: {campaignId}
               </p>
             </div>
@@ -670,12 +670,12 @@ export default function CampaignDetailPage() {
                 {getStatusLabel(campaign.status)}
               </span>
               {campaign.servingStatus && (
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[#a1a1aa]">
                   Serving: {campaign.servingStatus}
                 </span>
               )}
               {campaign.optimizationScore !== undefined && campaign.optimizationScore !== null && (
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[#a1a1aa]">
                   Optimization Score: {(campaign.optimizationScore * 100).toFixed(1)}%
                 </span>
               )}
@@ -705,15 +705,15 @@ export default function CampaignDetailPage() {
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Date Range Selector */}
-        <div className="mb-6 flex items-center gap-4 bg-white rounded-lg shadow p-4">
-          <label className="text-sm font-semibold text-gray-900">Date Range:</label>
+        <div className="mb-6 flex items-center gap-4 bg-[#141414] rounded-lg border border-[#2a2a2a] p-4">
+          <label className="text-sm font-semibold text-white">Date Range:</label>
           <select
             value={dateRange}
             onChange={(e) => {
               setDateRange(e.target.value);
               setShowDatePicker(e.target.value === 'CUSTOM');
             }}
-            className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-4 py-2 text-sm font-medium text-white bg-[#141414] border-2 border-[#2a2a2a] rounded-lg focus:ring-2 focus:ring-[#EF5744] focus:border-[#EF5744]"
           >
             <option value="TODAY">Today</option>
             <option value="YESTERDAY">Yesterday</option>
@@ -733,14 +733,14 @@ export default function CampaignDetailPage() {
                 type="date"
                 value={customStartDate}
                 onChange={(e) => setCustomStartDate(e.target.value)}
-                className="px-3 py-2 text-sm font-medium text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 text-sm font-medium text-white bg-[#141414] border-2 border-[#2a2a2a] rounded-lg focus:ring-2 focus:ring-[#EF5744] focus:border-[#EF5744]"
               />
-              <span className="text-gray-900 font-medium">to</span>
+              <span className="text-white font-medium">to</span>
               <input
                 type="date"
                 value={customEndDate}
                 onChange={(e) => setCustomEndDate(e.target.value)}
-                className="px-3 py-2 text-sm font-medium text-gray-900 bg-white border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 text-sm font-medium text-white bg-[#141414] border-2 border-[#2a2a2a] rounded-lg focus:ring-2 focus:ring-[#EF5744] focus:border-[#EF5744]"
               />
             </div>
           )}
@@ -748,54 +748,54 @@ export default function CampaignDetailPage() {
 
         {/* Performance Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Impressions</div>
-            <div className="text-2xl font-bold text-gray-900">{metrics.impressions.toLocaleString()}</div>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Impressions</div>
+            <div className="text-2xl font-bold text-white">{metrics.impressions.toLocaleString()}</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Clicks</div>
-            <div className="text-2xl font-bold text-gray-900">{metrics.clicks.toLocaleString()}</div>
-            <div className="text-xs text-gray-600 mt-1">CTR: {metrics.ctr.toFixed(2)}%</div>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Clicks</div>
+            <div className="text-2xl font-bold text-white">{metrics.clicks.toLocaleString()}</div>
+            <div className="text-xs text-[#a1a1aa] mt-1">CTR: {metrics.ctr.toFixed(2)}%</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Cost</div>
-            <div className="text-2xl font-bold text-gray-900">{formatCurrency(metrics.cost)}</div>
-            <div className="text-xs text-gray-600 mt-1">Avg CPC: {formatCurrency(metrics.avgCpc)}</div>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Cost</div>
+            <div className="text-2xl font-bold text-white">{formatCurrency(metrics.cost)}</div>
+            <div className="text-xs text-[#a1a1aa] mt-1">Avg CPC: {formatCurrency(metrics.avgCpc)}</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Conversions</div>
-            <div className="text-2xl font-bold text-gray-900">{metrics.conversions.toLocaleString()}</div>
-            <div className="text-xs text-gray-600 mt-1">Rate: {metrics.conversionRate.toFixed(2)}%</div>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Conversions</div>
+            <div className="text-2xl font-bold text-white">{metrics.conversions.toLocaleString()}</div>
+            <div className="text-xs text-[#a1a1aa] mt-1">Rate: {metrics.conversionRate.toFixed(2)}%</div>
           </div>
         </div>
 
         {/* Additional Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Avg CPM</div>
-            <div className="text-xl font-bold text-gray-900">{formatCurrency(metrics.avgCpm)}</div>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Avg CPM</div>
+            <div className="text-xl font-bold text-white">{formatCurrency(metrics.avgCpm)}</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Cost/Conversion</div>
-            <div className="text-xl font-bold text-gray-900">
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Cost/Conversion</div>
+            <div className="text-xl font-bold text-white">
               {metrics.costPerConversion > 0 ? formatCurrency(metrics.costPerConversion) : '—'}
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-sm font-medium text-gray-500 mb-1">Conversion Value</div>
-            <div className="text-xl font-bold text-gray-900">{formatCurrency(metrics.conversionsValue)}</div>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <div className="text-sm font-medium text-[#8b8b93] mb-1">Conversion Value</div>
+            <div className="text-xl font-bold text-white">{formatCurrency(metrics.conversionsValue)}</div>
           </div>
         </div>
 
         {/* Performance Chart */}
         {chartData.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6 mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Performance Trend</h3>
+              <h3 className="text-lg font-semibold text-white">Performance Trend</h3>
               <select
                 value={chartMetric}
                 onChange={(e) => setChartMetric(e.target.value as any)}
-                className="px-3 py-2 text-sm font-medium text-gray-900 bg-white border-2 border-gray-400 rounded-lg"
+                className="px-3 py-2 text-sm font-medium text-white bg-[#141414] border-2 border-[#2a2a2a] rounded-lg"
               >
                 <option value="impressions">Impressions</option>
                 <option value="clicks">Clicks</option>
@@ -810,12 +810,12 @@ export default function CampaignDetailPage() {
                 return (
                   <div key={idx} className="flex-1 flex flex-col items-center">
                     <div
-                      className="w-full bg-blue-500 hover:bg-blue-600 rounded-t transition-all"
+                      className="w-full bg-[#EF5744] hover:bg-[#c93a2a] rounded-t transition-all"
                       style={{ height: `${height}%` }}
                       title={`${point.date}: ${point[chartMetric]}`}
                     ></div>
                     {chartData.length <= 30 && idx % Math.ceil(chartData.length / 10) === 0 && (
-                      <div className="text-xs text-gray-500 mt-1 rotate-45 origin-left">
+                      <div className="text-xs text-[#8b8b93] mt-1 rotate-45 origin-left">
                         {point.date.slice(4, 6)}/{point.date.slice(6, 8)}
                       </div>
                     )}
@@ -829,26 +829,26 @@ export default function CampaignDetailPage() {
         {/* Campaign Settings */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Budget Card */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Budget & Bidding</h3>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Budget & Bidding</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1">
-                  <span className="text-sm text-gray-600">Daily Budget</span>
+                  <span className="text-sm text-[#a1a1aa]">Daily Budget</span>
                   <span
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 text-gray-600 text-xs cursor-help"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#2a2a2a] text-[#a1a1aa] text-xs cursor-help"
                     title="Maximum amount you're willing to spend per day on this campaign"
                   >
                     ?
                   </span>
                 </div>
-                <span className="text-sm font-medium text-gray-900">{formatCurrency(campaign.budget)}</span>
+                <span className="text-sm font-medium text-white">{formatCurrency(campaign.budget)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1">
-                  <span className="text-sm text-gray-600">Budget Type</span>
+                  <span className="text-sm text-[#a1a1aa]">Budget Type</span>
                   <span
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 text-gray-600 text-xs cursor-help"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#2a2a2a] text-[#a1a1aa] text-xs cursor-help"
                     title={
                       campaign.budgetType === 'STANDARD' || campaign.budgetType === '2'
                         ? 'Standard: Budget is distributed evenly throughout the day'
@@ -858,27 +858,27 @@ export default function CampaignDetailPage() {
                     ?
                   </span>
                 </div>
-                <span className="text-sm font-medium text-gray-900">{getBudgetTypeLabel(campaign.budgetType)}</span>
+                <span className="text-sm font-medium text-white">{getBudgetTypeLabel(campaign.budgetType)}</span>
               </div>
               {campaign.isSharedBudget && (
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-1">
-                    <span className="text-sm text-gray-600">Budget Sharing</span>
+                    <span className="text-sm text-[#a1a1aa]">Budget Sharing</span>
                     <span
-                      className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 text-gray-600 text-xs cursor-help"
+                      className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#2a2a2a] text-[#a1a1aa] text-xs cursor-help"
                       title="This budget is shared across multiple campaigns, allowing flexible allocation"
                     >
                       ?
                     </span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">Shared</span>
+                  <span className="text-sm font-medium text-white">Shared</span>
                 </div>
               )}
-              <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+              <div className="flex justify-between items-center pt-3 border-t border-[#2a2a2a]">
                 <div className="flex items-center gap-1">
-                  <span className="text-sm text-gray-600">Bidding Strategy</span>
+                  <span className="text-sm text-[#a1a1aa]">Bidding Strategy</span>
                   <span
-                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-200 text-gray-600 text-xs cursor-help"
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#2a2a2a] text-[#a1a1aa] text-xs cursor-help"
                     title={
                       campaign.biddingStrategy === 'MANUAL_CPC' || campaign.biddingStrategy === '3'
                         ? 'Manual CPC: You set your own bids for clicks'
@@ -898,66 +898,66 @@ export default function CampaignDetailPage() {
                     ?
                   </span>
                 </div>
-                <span className="text-sm font-medium text-gray-900">{getBiddingStrategyLabel(campaign.biddingStrategy)}</span>
+                <span className="text-sm font-medium text-white">{getBiddingStrategyLabel(campaign.biddingStrategy)}</span>
               </div>
             </div>
           </div>
 
           {/* Schedule Card */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Schedule</h3>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Schedule</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Start Date</span>
-                <span className="text-sm font-medium text-gray-900">{campaign.startDate || 'Not set'}</span>
+                <span className="text-sm text-[#a1a1aa]">Start Date</span>
+                <span className="text-sm font-medium text-white">{campaign.startDate || 'Not set'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">End Date</span>
-                <span className="text-sm font-medium text-gray-900">{campaign.endDate || 'No end date'}</span>
+                <span className="text-sm text-[#a1a1aa]">End Date</span>
+                <span className="text-sm font-medium text-white">{campaign.endDate || 'No end date'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Time Zone</span>
-                <span className="text-sm font-medium text-gray-900">{account?.timeZone}</span>
+                <span className="text-sm text-[#a1a1aa]">Time Zone</span>
+                <span className="text-sm font-medium text-white">{account?.timeZone}</span>
               </div>
             </div>
           </div>
 
           {/* Campaign Type Card */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Type</h3>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Campaign Type</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Channel Type</span>
-                <span className="text-sm font-medium text-gray-900">{getChannelTypeLabel(campaign.advertisingChannelType)}</span>
+                <span className="text-sm text-[#a1a1aa]">Channel Type</span>
+                <span className="text-sm font-medium text-white">{getChannelTypeLabel(campaign.advertisingChannelType)}</span>
               </div>
               {campaign.advertisingChannelSubType && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Sub Type</span>
-                  <span className="text-sm font-medium text-gray-900">{campaign.advertisingChannelSubType}</span>
+                  <span className="text-sm text-[#a1a1aa]">Sub Type</span>
+                  <span className="text-sm font-medium text-white">{campaign.advertisingChannelSubType}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Network Settings Card */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Network Settings</h3>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Network Settings</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Google Search</span>
-                <span className={`text-sm font-medium ${campaign.networkSettings.targetGoogleSearch ? 'text-green-600' : 'text-gray-400'}`}>
+                <span className="text-sm text-[#a1a1aa]">Google Search</span>
+                <span className={`text-sm font-medium ${campaign.networkSettings.targetGoogleSearch ? 'text-green-600' : 'text-[#8b8b93]'}`}>
                   {campaign.networkSettings.targetGoogleSearch ? 'Enabled' : 'Disabled'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Search Partners</span>
-                <span className={`text-sm font-medium ${campaign.networkSettings.targetPartnerSearchNetwork ? 'text-green-600' : 'text-gray-400'}`}>
+                <span className="text-sm text-[#a1a1aa]">Search Partners</span>
+                <span className={`text-sm font-medium ${campaign.networkSettings.targetPartnerSearchNetwork ? 'text-green-600' : 'text-[#8b8b93]'}`}>
                   {campaign.networkSettings.targetPartnerSearchNetwork ? 'Enabled' : 'Disabled'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Display Network</span>
-                <span className={`text-sm font-medium ${campaign.networkSettings.targetContentNetwork ? 'text-green-600' : 'text-gray-400'}`}>
+                <span className="text-sm text-[#a1a1aa]">Display Network</span>
+                <span className={`text-sm font-medium ${campaign.networkSettings.targetContentNetwork ? 'text-green-600' : 'text-[#8b8b93]'}`}>
                   {campaign.networkSettings.targetContentNetwork ? 'Enabled' : 'Disabled'}
                 </span>
               </div>
@@ -967,41 +967,41 @@ export default function CampaignDetailPage() {
 
         {/* Device Performance */}
         {Object.keys(devicePerformance).length > 0 && (
-          <div className="bg-white rounded-lg shadow p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance by Device</h3>
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] p-6 mb-8">
+            <h3 className="text-lg font-semibold text-white mb-4">Performance by Device</h3>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-[#2a2a2a]">
+                <thead className="bg-[#1a1a1a]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Device</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Impressions</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Clicks</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">CTR</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Cost</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Conversions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase">Device</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">Impressions</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">Clicks</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">CTR</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">Cost</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">Conversions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-[#141414] divide-y divide-[#2a2a2a]">
                   {Object.entries(devicePerformance).map(([device, perf]: [string, any]) => {
                     const ctr = perf.impressions > 0 ? (perf.clicks / perf.impressions) * 100 : 0;
                     return (
                       <tr key={device}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                           {getDeviceLabel(device)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {perf.impressions.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {perf.clicks.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {ctr.toFixed(2)}%
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {formatCurrency(perf.cost)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {perf.conversions.toLocaleString()}
                         </td>
                       </tr>
@@ -1015,14 +1015,14 @@ export default function CampaignDetailPage() {
 
         {/* Keywords Performance */}
         {keywords.length > 0 && (
-          <div className="bg-white rounded-lg shadow mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] mb-8">
+            <div className="px-6 py-4 border-b border-[#2a2a2a]">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-white">
                     Keywords Performance ({sortedKeywords.length}{filteredKeywords.length !== keywords.length && ` of ${keywords.length}`})
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">Top performing keywords by conversions and clicks</p>
+                  <p className="text-sm text-[#8b8b93] mt-1">Top performing keywords by conversions and clicks</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {/* Saved Views Dropdown */}
@@ -1030,21 +1030,21 @@ export default function CampaignDetailPage() {
                     <div className="relative">
                       <button
                         onClick={() => setShowViewsMenu(showViewsMenu === 'keyword' ? null : 'keyword')}
-                        className="px-4 py-2 bg-white border-2 border-gray-400 text-gray-900 text-sm rounded-lg hover:bg-gray-50 font-medium"
+                        className="px-4 py-2 bg-[#141414] border-2 border-[#2a2a2a] text-white text-sm rounded-lg hover:bg-[rgba(255,255,255,0.05)] font-medium"
                       >
                         📁 Saved Views ({getViewsForType('keyword').length})
                       </button>
                       {showViewsMenu === 'keyword' && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-10">
+                        <div className="absolute right-0 mt-2 w-64 bg-[#141414] border-2 border-[#2a2a2a] rounded-lg z-10">
                           <div className="p-2">
                             {getViewsForType('keyword').map(view => (
-                              <div key={view.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                              <div key={view.id} className="flex items-center justify-between p-2 hover:bg-[#1a1a1a] rounded">
                                 <button
                                   onClick={() => loadView(view)}
-                                  className="flex-1 text-left text-sm text-gray-900"
+                                  className="flex-1 text-left text-sm text-white"
                                 >
                                   {view.name}
-                                  <span className="text-xs text-gray-500 ml-2">({view.filters.length} filters)</span>
+                                  <span className="text-xs text-[#8b8b93] ml-2">({view.filters.length} filters)</span>
                                 </button>
                                 <button
                                   onClick={() => deleteView(view.id)}
@@ -1071,7 +1071,7 @@ export default function CampaignDetailPage() {
                   {/* Add Filter Button */}
                   <button
                     onClick={() => setShowKeywordFilterBuilder(!showKeywordFilterBuilder)}
-                    className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 font-medium"
+                    className="px-4 py-2 bg-[#c93a2a] text-white text-sm rounded-lg hover:bg-[#a83020] font-medium"
                   >
                     + Add Filter
                   </button>
@@ -1082,13 +1082,13 @@ export default function CampaignDetailPage() {
               {keywordFilters.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {keywordFilters.map((filter, idx) => (
-                    <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm">
-                      <span className="text-gray-700">
+                    <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-[#1a1a1a] rounded-full text-sm">
+                      <span className="text-[#d4d4d8]">
                         {filter.field} {filter.operator} {filter.value}
                       </span>
                       <button
                         onClick={() => removeFilter('keyword', idx)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-[#8b8b93] hover:text-[#d4d4d8]"
                       >
                         ✕
                       </button>
@@ -1122,12 +1122,12 @@ export default function CampaignDetailPage() {
               )}
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-[#2a2a2a]">
+                <thead className="bg-[#1a1a1a]">
                   <tr>
                     <th
                       onClick={() => handleKeywordSort('text')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Keyword</span>
@@ -1144,7 +1144,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('matchType')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Match Type</span>
@@ -1161,7 +1161,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('adGroupName')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Ad Group</span>
@@ -1178,7 +1178,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('qualityScore')}
-                      className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-center text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-center gap-1">
                         <span>Quality Score</span>
@@ -1195,7 +1195,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('status')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Status</span>
@@ -1212,7 +1212,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('impressions')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Impressions</span>
@@ -1229,7 +1229,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('clicks')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Clicks</span>
@@ -1244,10 +1244,10 @@ export default function CampaignDetailPage() {
                         )}
                       </div>
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">CTR</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">CTR</th>
                     <th
                       onClick={() => handleKeywordSort('cost')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Cost</span>
@@ -1264,7 +1264,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleKeywordSort('conversions')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Conversions</span>
@@ -1281,13 +1281,13 @@ export default function CampaignDetailPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-[#141414] divide-y divide-[#2a2a2a]">
                   {sortedKeywords.map((keyword) => {
                       const ctr = keyword.impressions > 0 ? (keyword.clicks / keyword.impressions) * 100 : 0;
                       return (
-                        <tr key={keyword.id} className="hover:bg-gray-50">
+                        <tr key={keyword.id} className="hover:bg-[#1a1a1a]">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{keyword.text}</div>
+                            <div className="text-sm font-medium text-white">{keyword.text}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span
@@ -1307,7 +1307,7 @@ export default function CampaignDetailPage() {
                                'B'}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[#a1a1aa]">
                             {keyword.adGroupName}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -1320,7 +1320,7 @@ export default function CampaignDetailPage() {
                                 {keyword.qualityScore}
                               </span>
                             ) : (
-                              <span className="text-gray-400">—</span>
+                              <span className="text-[#8b8b93]">—</span>
                             )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -1328,19 +1328,19 @@ export default function CampaignDetailPage() {
                               {getStatusLabel(keyword.status)}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                             {keyword.impressions.toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                             {keyword.clicks.toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                             {ctr.toFixed(2)}%
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                             {formatCurrency(keyword.cost)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white text-right">
                             {keyword.conversions.toLocaleString()}
                           </td>
                         </tr>
@@ -1354,35 +1354,35 @@ export default function CampaignDetailPage() {
 
         {/* Search Terms */}
         {searchTerms.length > 0 && (
-          <div className="bg-white rounded-lg shadow mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a] mb-8">
+            <div className="px-6 py-4 border-b border-[#2a2a2a]">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-white">
                     Search Terms ({sortedSearchTerms.length}{filteredSearchTerms.length !== searchTerms.length && ` of ${searchTerms.length}`})
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">Actual search queries that triggered your ads</p>
+                  <p className="text-sm text-[#8b8b93] mt-1">Actual search queries that triggered your ads</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {getViewsForType('searchTerm').length > 0 && (
                     <div className="relative">
                       <button
                         onClick={() => setShowViewsMenu(showViewsMenu === 'searchTerm' ? null : 'searchTerm')}
-                        className="px-4 py-2 bg-white border-2 border-gray-400 text-gray-900 text-sm rounded-lg hover:bg-gray-50 font-medium"
+                        className="px-4 py-2 bg-[#141414] border-2 border-[#2a2a2a] text-white text-sm rounded-lg hover:bg-[rgba(255,255,255,0.05)] font-medium"
                       >
                         📁 Saved Views ({getViewsForType('searchTerm').length})
                       </button>
                       {showViewsMenu === 'searchTerm' && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-10">
+                        <div className="absolute right-0 mt-2 w-64 bg-[#141414] border-2 border-[#2a2a2a] rounded-lg z-10">
                           <div className="p-2">
                             {getViewsForType('searchTerm').map(view => (
-                              <div key={view.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                              <div key={view.id} className="flex items-center justify-between p-2 hover:bg-[#1a1a1a] rounded">
                                 <button
                                   onClick={() => loadView(view)}
-                                  className="flex-1 text-left text-sm text-gray-900"
+                                  className="flex-1 text-left text-sm text-white"
                                 >
                                   {view.name}
-                                  <span className="text-xs text-gray-500 ml-2">({view.filters.length} filters)</span>
+                                  <span className="text-xs text-[#8b8b93] ml-2">({view.filters.length} filters)</span>
                                 </button>
                                 <button
                                   onClick={() => deleteView(view.id)}
@@ -1407,7 +1407,7 @@ export default function CampaignDetailPage() {
                   )}
                   <button
                     onClick={() => setShowSearchTermFilterBuilder(!showSearchTermFilterBuilder)}
-                    className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 font-medium"
+                    className="px-4 py-2 bg-[#c93a2a] text-white text-sm rounded-lg hover:bg-[#a83020] font-medium"
                   >
                     + Add Filter
                   </button>
@@ -1418,13 +1418,13 @@ export default function CampaignDetailPage() {
               {searchTermFilters.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {searchTermFilters.map((filter, idx) => (
-                    <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm">
-                      <span className="text-gray-700">
+                    <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-[#1a1a1a] rounded-full text-sm">
+                      <span className="text-[#d4d4d8]">
                         {filter.field} {filter.operator} {filter.value}
                       </span>
                       <button
                         onClick={() => removeFilter('searchTerm', idx)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-[#8b8b93] hover:text-[#d4d4d8]"
                       >
                         ✕
                       </button>
@@ -1457,12 +1457,12 @@ export default function CampaignDetailPage() {
               )}
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-[#2a2a2a]">
+                <thead className="bg-[#1a1a1a]">
                   <tr>
                     <th
                       onClick={() => handleSearchTermSort('searchTerm')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Search Term</span>
@@ -1479,7 +1479,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleSearchTermSort('adGroupName')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Ad Group</span>
@@ -1496,7 +1496,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleSearchTermSort('status')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Status</span>
@@ -1513,7 +1513,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleSearchTermSort('impressions')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Impressions</span>
@@ -1530,7 +1530,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleSearchTermSort('clicks')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Clicks</span>
@@ -1545,10 +1545,10 @@ export default function CampaignDetailPage() {
                         )}
                       </div>
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">CTR</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase">CTR</th>
                     <th
                       onClick={() => handleSearchTermSort('cost')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Cost</span>
@@ -1565,7 +1565,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleSearchTermSort('conversions')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Conversions</span>
@@ -1582,17 +1582,17 @@ export default function CampaignDetailPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-[#141414] divide-y divide-[#2a2a2a]">
                   {sortedSearchTerms.map((term, idx) => {
                     const ctr = term.impressions > 0 ? (term.clicks / term.impressions) * 100 : 0;
                     return (
-                      <tr key={idx} className="hover:bg-gray-50">
+                      <tr key={idx} className="hover:bg-[#1a1a1a]">
                         <td className="px-6 py-4">
-                          <div className="text-sm font-medium text-gray-900 max-w-md">
+                          <div className="text-sm font-medium text-white max-w-md">
                             {term.searchTerm}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#a1a1aa]">
                           {term.adGroupName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -1613,19 +1613,19 @@ export default function CampaignDetailPage() {
                              '— Not Added'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {term.impressions.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {term.clicks.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {ctr.toFixed(2)}%
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                           {formatCurrency(term.cost)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white text-right">
                           {term.conversions.toLocaleString()}
                         </td>
                       </tr>
@@ -1639,10 +1639,10 @@ export default function CampaignDetailPage() {
 
         {/* Ad Groups Table */}
         {adGroups.length > 0 && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
+          <div className="bg-[#141414] rounded-lg border border-[#2a2a2a]">
+            <div className="px-6 py-4 border-b border-[#2a2a2a]">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-white">
                   Ad Groups ({sortedAdGroups.length}{filteredAdGroups.length !== adGroups.length && ` of ${adGroups.length}`})
                 </h3>
                 <div className="flex items-center gap-2">
@@ -1650,21 +1650,21 @@ export default function CampaignDetailPage() {
                     <div className="relative">
                       <button
                         onClick={() => setShowViewsMenu(showViewsMenu === 'adGroup' ? null : 'adGroup')}
-                        className="px-4 py-2 bg-white border-2 border-gray-400 text-gray-900 text-sm rounded-lg hover:bg-gray-50 font-medium"
+                        className="px-4 py-2 bg-[#141414] border-2 border-[#2a2a2a] text-white text-sm rounded-lg hover:bg-[rgba(255,255,255,0.05)] font-medium"
                       >
                         📁 Saved Views ({getViewsForType('adGroup').length})
                       </button>
                       {showViewsMenu === 'adGroup' && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-10">
+                        <div className="absolute right-0 mt-2 w-64 bg-[#141414] border-2 border-[#2a2a2a] rounded-lg z-10">
                           <div className="p-2">
                             {getViewsForType('adGroup').map(view => (
-                              <div key={view.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                              <div key={view.id} className="flex items-center justify-between p-2 hover:bg-[#1a1a1a] rounded">
                                 <button
                                   onClick={() => loadView(view)}
-                                  className="flex-1 text-left text-sm text-gray-900"
+                                  className="flex-1 text-left text-sm text-white"
                                 >
                                   {view.name}
-                                  <span className="text-xs text-gray-500 ml-2">({view.filters.length} filters)</span>
+                                  <span className="text-xs text-[#8b8b93] ml-2">({view.filters.length} filters)</span>
                                 </button>
                                 <button
                                   onClick={() => deleteView(view.id)}
@@ -1689,7 +1689,7 @@ export default function CampaignDetailPage() {
                   )}
                   <button
                     onClick={() => setShowAdGroupFilterBuilder(!showAdGroupFilterBuilder)}
-                    className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 font-medium"
+                    className="px-4 py-2 bg-[#c93a2a] text-white text-sm rounded-lg hover:bg-[#a83020] font-medium"
                   >
                     + Add Filter
                   </button>
@@ -1700,13 +1700,13 @@ export default function CampaignDetailPage() {
               {adGroupFilters.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {adGroupFilters.map((filter, idx) => (
-                    <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm">
-                      <span className="text-gray-700">
+                    <div key={idx} className="flex items-center gap-2 px-3 py-1 bg-[#1a1a1a] rounded-full text-sm">
+                      <span className="text-[#d4d4d8]">
                         {filter.field} {filter.operator} {filter.value}
                       </span>
                       <button
                         onClick={() => removeFilter('adGroup', idx)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-[#8b8b93] hover:text-[#d4d4d8]"
                       >
                         ✕
                       </button>
@@ -1740,12 +1740,12 @@ export default function CampaignDetailPage() {
               )}
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-[#2a2a2a]">
+                <thead className="bg-[#1a1a1a]">
                   <tr>
                     <th
                       onClick={() => handleAdGroupSort('name')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Name</span>
@@ -1762,7 +1762,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleAdGroupSort('status')}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-left text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center gap-1">
                         <span>Status</span>
@@ -1779,7 +1779,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleAdGroupSort('cpcBid')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>CPC Bid</span>
@@ -1796,7 +1796,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleAdGroupSort('impressions')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Impressions</span>
@@ -1813,7 +1813,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleAdGroupSort('clicks')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Clicks</span>
@@ -1830,7 +1830,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleAdGroupSort('cost')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Cost</span>
@@ -1847,7 +1847,7 @@ export default function CampaignDetailPage() {
                     </th>
                     <th
                       onClick={() => handleAdGroupSort('conversions')}
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none"
+                      className="px-6 py-3 text-right text-xs font-medium text-[#8b8b93] uppercase cursor-pointer hover:bg-[rgba(255,255,255,0.08)] select-none"
                     >
                       <div className="flex items-center justify-end gap-1">
                         <span>Conversions</span>
@@ -1864,31 +1864,35 @@ export default function CampaignDetailPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-[#141414] divide-y divide-[#2a2a2a]">
                   {sortedAdGroups.map((adGroup) => (
-                    <tr key={adGroup.id} className="hover:bg-gray-50">
+                    <tr
+                      key={adGroup.id}
+                      onClick={() => router.push(`/campaigns/${accountId}/${campaignId}/${adGroup.id}`)}
+                      className="hover:bg-[#1a1a1a] cursor-pointer"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{adGroup.name}</div>
-                        <div className="text-xs text-gray-500">ID: {adGroup.id}</div>
+                        <div className="text-sm font-medium text-[#EF5744] hover:text-[#EF5744]">{adGroup.name}</div>
+                        <div className="text-xs text-[#8b8b93]">ID: {adGroup.id}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(adGroup.status)}`}>
                           {getStatusLabel(adGroup.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                         {formatCurrency(adGroup.cpcBid)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                         {adGroup.impressions.toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                         {adGroup.clicks.toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                         {formatCurrency(adGroup.cost)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                         {adGroup.conversions.toLocaleString()}
                       </td>
                     </tr>
