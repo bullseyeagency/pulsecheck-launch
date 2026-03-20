@@ -1,16 +1,22 @@
 import { handlers } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
 
-/**
- * NextAuth API Route Handler
- *
- * Handles all authentication requests:
- * - GET /api/auth/signin - Sign in page
- * - POST /api/auth/signin - Sign in action
- * - GET /api/auth/signout - Sign out page
- * - POST /api/auth/signout - Sign out action
- * - GET /api/auth/callback/google - OAuth callback
- * - GET /api/auth/session - Get current session
- * - GET /api/auth/csrf - Get CSRF token
- * - GET /api/auth/providers - Get available providers
- */
-export const { GET, POST } = handlers;
+async function wrappedGET(req: NextRequest) {
+  try {
+    return await handlers.GET(req);
+  } catch (err: any) {
+    console.error("[AUTH GET ERROR]", err.message, err.stack);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+async function wrappedPOST(req: NextRequest) {
+  try {
+    return await handlers.POST(req);
+  } catch (err: any) {
+    console.error("[AUTH POST ERROR]", err.message, err.stack);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+export { wrappedGET as GET, wrappedPOST as POST };
