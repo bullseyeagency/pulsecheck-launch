@@ -1,6 +1,10 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error('RESEND_API_KEY is not configured');
+  return new Resend(key);
+}
 
 export async function sendAuditReadyEmail({
   to,
@@ -17,7 +21,7 @@ export async function sendAuditReadyEmail({
 }) {
   const reportUrl = `${process.env.NEXTAUTH_URL || 'https://pulsecheck.dalyadvertising.com'}/scan/${auditId}`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'PulseCheck <noreply@dalyadvertising.com>',
     to,
     subject: `Your audit for ${domain} is ready`,
@@ -60,7 +64,7 @@ export async function sendAuditViewedEmail({
 }) {
   const reportUrl = `${process.env.NEXTAUTH_URL || 'https://pulsecheck.dalyadvertising.com'}/scan/${auditId}`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'PulseCheck <noreply@dalyadvertising.com>',
     to,
     subject: `${domain} just viewed their SEO audit`,
