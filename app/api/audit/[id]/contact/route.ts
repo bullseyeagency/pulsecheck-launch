@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return null;
+  return new Resend(key);
+}
 
 export async function POST(
   request: NextRequest,
@@ -43,7 +47,7 @@ export async function POST(
       : 0;
 
     // Notify Daly Advertising of new lead
-    resend.emails.send({
+    getResend()?.emails.send({
       from: "PulseCheck <noreply@dalyadvertising.com>",
       to: "marco@thebullseye.agency",
       subject: `New audit lead: ${name || email} — ${audit.domain}`,
@@ -72,7 +76,7 @@ export async function POST(
     }).catch((err) => console.error("[contact] notify email failed:", err));
 
     // Send report link to the lead
-    resend.emails.send({
+    getResend()?.emails.send({
       from: "PulseCheck <noreply@dalyadvertising.com>",
       to: email,
       subject: `Your free digital audit for ${audit.domain} is ready`,
