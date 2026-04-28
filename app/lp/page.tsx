@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -79,6 +80,7 @@ function StepIcon({ status }: { status: StepStatus['status'] }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AuditLandingPage() {
+  const router = useRouter();
   const [pageState, setPageState] = useState<PageState>('idle');
   const [url, setUrl] = useState('');
   const [domain, setDomain] = useState('');
@@ -169,12 +171,12 @@ export default function AuditLandingPage() {
 
   function handleGateSubmit(name: string, email: string, phone: string) {
     if (!auditId) return;
-    setPageState('results');
     fetch(`/api/audit/${auditId}/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, phone }),
     }).catch(() => {});
+    router.push(`/scan/${auditId}`);
   }
 
   const isActive = pageState !== 'idle';

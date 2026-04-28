@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect, use } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -84,6 +84,7 @@ export default function IndustryLandingPage({ params }: { params: Promise<{ indu
   const _config = getIndustry(industry);
   if (!_config) notFound();
   const config = _config!;
+  const router = useRouter();
 
   const [pageState, setPageState] = useState<PageState>('idle');
   const [url, setUrl] = useState('');
@@ -175,13 +176,13 @@ export default function IndustryLandingPage({ params }: { params: Promise<{ indu
 
   function handleGateSubmit(name: string, email: string, phone: string) {
     if (!auditId) return;
-    // Show results immediately — contact save is fire-and-forget
-    setPageState('results');
+    // Fire-and-forget contact save, redirect straight to full report
     fetch(`/api/audit/${auditId}/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, phone }),
     }).catch(() => {});
+    router.push(`/scan/${auditId}`);
   }
 
   const isActive = pageState !== 'idle';
