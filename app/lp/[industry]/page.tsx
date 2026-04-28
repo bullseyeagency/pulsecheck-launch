@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect, use } from 'react';
-import { notFound, useRouter, useSearchParams } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -85,8 +85,10 @@ export default function IndustryLandingPage({ params }: { params: Promise<{ indu
   if (!_config) notFound();
   const config = _config!;
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const bypass = searchParams.get('bypass') === '1';
+  const bypassRef = useRef(false);
+  useEffect(() => {
+    bypassRef.current = new URLSearchParams(window.location.search).get('bypass') === '1';
+  }, []);
 
   const [pageState, setPageState] = useState<PageState>('idle');
   const [url, setUrl] = useState('');
@@ -125,7 +127,7 @@ export default function IndustryLandingPage({ params }: { params: Promise<{ indu
 
         if (audit.status === 'complete' || audit.status === 'failed') {
           if (pollRef.current) clearInterval(pollRef.current);
-          if (bypass) {
+          if (bypassRef.current) {
             router.push(`/scan/${id}`);
           } else {
             if (audit.report) setReport(audit.report as Record<string, unknown>);
@@ -134,7 +136,7 @@ export default function IndustryLandingPage({ params }: { params: Promise<{ indu
         }
       } catch { /* retry */ }
     }, 2000);
-  }, [bypass, router]);
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
