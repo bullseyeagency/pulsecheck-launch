@@ -702,6 +702,7 @@ async function runAgentAnalysis(
   scores: { pagespeedMobile: number; pagespeedDesktop: number; seo: number; accessibility: number }
 ): Promise<string | null> {
   const agentApiUrl = process.env.AGENT_API_URL || 'http://localhost:3005';
+  const agentApiKey = process.env.AGENT_API_KEY || '';
 
   const imagesWithoutAlt = crawlData.images.filter((img) => !img.hasAlt).length;
   const schemaTypes = crawlData.jsonLd.map((j) => j['@type']).filter(Boolean).join(', ') || 'none';
@@ -733,7 +734,10 @@ Produce a prioritized audit covering crawlability, performance, on-page SEO, and
 
   const res = await fetch(`${agentApiUrl}/api/agents/marketing`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(agentApiKey && { 'x-api-key': agentApiKey }),
+    },
     body: JSON.stringify({ message, skill: 'seo-audit' }),
   });
 
