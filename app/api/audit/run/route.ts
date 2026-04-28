@@ -333,7 +333,7 @@ async function runPageSpeed(url: string) {
 
   const fetchPSI = async (strategy: "mobile" | "desktop") => {
     const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}&key=${apiKey}&category=PERFORMANCE&category=ACCESSIBILITY&category=SEO&category=BEST_PRACTICES`;
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, { signal: AbortSignal.timeout(55000) });
     if (!res.ok) throw new Error(`PSI ${strategy} error: ${res.status}`);
     return res.json();
   };
@@ -484,13 +484,22 @@ async function runCompetitorAnalysis(
   location: string,
   ownDomain: string
 ) {
-  // Get SERP to find competitors
-  const serpData = await searchSerpAPI({
-    engine: "google",
-    q: `${industry} ${location}`,
-    location,
-    num: 20,
-  });
+  // Get SERP to find competitors — fall back to industry-only query if location fails
+  let serpData: Record<string, unknown> = {};
+  try {
+    serpData = await searchSerpAPI({
+      engine: "google",
+      q: `${industry} ${location}`,
+      location,
+      num: 20,
+    });
+  } catch {
+    try {
+      serpData = await searchSerpAPI({ engine: "google", q: industry, num: 20 });
+    } catch {
+      return { competitors: [], competitorDomains: [] };
+    }
+  }
 
   const organicResults = (serpData as Record<string, unknown[]>)
     .organic_results || [];
