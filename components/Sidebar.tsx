@@ -22,6 +22,11 @@ type NavLink = {
   step?: number;
 };
 
+const seoAuditItems: NavLink[] = [
+  { href: '/audit', icon: Search, label: 'New Audit' },
+  { href: '/audits', icon: FileSearch, label: 'All Audits' },
+];
+
 const builderSteps: NavLink[] = [
   { href: '/campaign-builder', icon: Hammer, label: 'Keyword Research', step: 1 },
   { href: '/json-merger', icon: Combine, label: 'Merge JSON', step: 2 },
@@ -52,6 +57,7 @@ const keywordsDataItems: NavLink[] = [
   { href: '/keywords-data/keywords-for-keywords', icon: KeyRound, label: 'Related Keywords' },
   { href: '/keywords-data/ad-traffic', icon: TrendingUp, label: 'Ad Traffic' },
   { href: '/keywords-data/google-trends', icon: Activity, label: 'Google Trends' },
+  { href: '/keywords-data/dataforseo-trends', icon: TrendingUp, label: 'DataForSEO Trends' },
 ];
 
 const serpItems: NavLink[] = [
@@ -104,6 +110,7 @@ const businessItems: NavLink[] = [
 
 const gscItems: NavLink[] = [
   { href: '/gsc', icon: Globe, label: 'URL Indexing' },
+  { href: '/gsc#indexnow', icon: Zap, label: 'IndexNow (Bing)' },
 ];
 
 const managerLinks: NavLink[] = [
@@ -113,6 +120,8 @@ const managerLinks: NavLink[] = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const seoAuditActive = seoAuditItems.some((s) => pathname === s.href || pathname.startsWith('/audit/'));
+  const [seoAuditOpen, setSeoAuditOpen] = useState(seoAuditActive);
   const builderActive = builderSteps.some((s) => pathname === s.href);
   const domainActive = domainAnalyticsItems.some((s) => pathname === s.href);
   const aiActive = aiOptimizationItems.some((s) => pathname === s.href);
@@ -176,6 +185,30 @@ export default function Sidebar() {
           <Home className="h-4 w-4 flex-shrink-0" />
           <span>Home</span>
         </Link>
+
+        {/* SEO Audit */}
+        <div>
+          <button onClick={() => setSeoAuditOpen(!seoAuditOpen)} className={sectionToggleClass(seoAuditActive)}>
+            <div className="flex items-center gap-2.5">
+              <Search className="h-4 w-4 flex-shrink-0" />
+              <span>SEO Audit</span>
+            </div>
+            <ChevronDown className={`h-3.5 w-3.5 text-[#8b8b93] transition-transform duration-200 ${seoAuditOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {seoAuditOpen && (
+            <div className="ml-4 mt-0.5 space-y-0.5 border-l-2 border-[#2a2a2a] pl-2">
+              {seoAuditItems.map(({ href, icon: Icon, label }) => {
+                const isActive = pathname === href;
+                return (
+                  <Link key={href} href={href} className={subLinkClass(isActive)}>
+                    <Icon className="h-3.5 w-3.5 flex-shrink-0" />
+                    <span>{label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
         {/* Campaign Builder */}
         <div>

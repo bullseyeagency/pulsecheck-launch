@@ -13,7 +13,9 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^6.2.0",
     "@stripe/stripe-js": "^4.10.0",
+    "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
+    "facebook-nodejs-business-sdk": "^24.0.1",
     "framer-motion": "^12.34.0",
     "google-ads-api": "^23.0.0",
     "googleapis": "^171.4.0",
@@ -23,6 +25,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.0",
+    "resend": "^6.12.2",
     "stripe": "^17.5.0",
     "tailwind-merge": "^3.4.1"
   },

@@ -223,7 +223,11 @@ export default function IndustryLandingPage({ params }: { params: Promise<{ indu
                 Free {config.name} Digital Audit
               </div>
               <h1 className="text-4xl sm:text-5xl font-black leading-tight mb-4">
-                {config.headline}
+                {config.headline.split(new RegExp(`(${config.name})`, 'i')).map((part, i) =>
+                  part.toLowerCase() === config.name.toLowerCase() ? (
+                    <span key={i} className="bg-[#EF5744] text-white px-2 py-0.5 rounded-md">{part}</span>
+                  ) : part
+                )}
               </h1>
               <p className="text-lg text-[#8b8b93] leading-relaxed mb-7">
                 {config.subheadline}

@@ -16,30 +16,32 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   // Relations
-  users              User[]
-  subscriptions      Subscription[]
-  googleAdsAccounts  GoogleAdsAccount[]
+  users                User[]
+  subscriptions        Subscription[]
+  googleAdsAccounts    GoogleAdsAccount[]
   googleAdsConnections GoogleAdsConnection[]
+  audits               Audit[]
 }
 
 // Users (belongs to Organization)
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  name           String?
-  emailVerified  DateTime?
-  image          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   // Multi-tenant (optional during creation, assigned in onboarding)
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  role           String @default("member") // owner, admin, member
+  role           String        @default("member") // owner, admin, member
 
   // Auth
   accounts Account[]
   sessions Session[]
+  audits   Audit[]
 }
 
 // NextAuth Account model
@@ -82,50 +84,50 @@ model VerificationToken {
 
 // Stripe Subscription
 model Subscription {
-  id                   String   @id @default(cuid())
-  organizationId       String
-  organization         Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  stripeCustomerId     String   @unique
-  stripeSubscriptionId String?  @unique
-  stripePriceId        String?
+  stripeCustomerId       String    @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
 
-  status               String   @default("trialing") // trialing, active, canceled, past_due
-  plan                 String   @default("free") // free, pro, enterprise
+  status String @default("trialing") // trialing, active, canceled, past_due
+  plan   String @default("free") // free, pro, enterprise
 
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Google Ads Accounts (per organization)
 model GoogleAdsAccount {
-  id               String   @id @default(cuid())
-  organizationId   String
-  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   accountId        String
   accountName      String
   managerAccountId String?
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([organizationId, accountId])
 }
 
 // GSC URL Inspection Log
 model GscInspection {
-  id            String   @id @default(cuid())
-  siteUrl       String
-  pageUrl       String
-  verdict       String   // PASS, PARTIAL, FAIL, NEUTRAL, ERROR
-  coverageState String?
-  lastCrawlTime String?
-  crawledAs     String?
+  id             String   @id @default(cuid())
+  siteUrl        String
+  pageUrl        String
+  verdict        String // PASS, PARTIAL, FAIL, NEUTRAL, ERROR
+  coverageState  String?
+  lastCrawlTime  String?
+  crawledAs      String?
   robotsTxtState String?
   indexingState  String?
-  checkedAt     DateTime @default(now())
+  checkedAt      DateTime @default(now())
 
   @@index([siteUrl, pageUrl])
   @@index([siteUrl, checkedAt])
@@ -133,24 +135,61 @@ model GscInspection {
 
 // Google Ads API OAuth Connection (stores refresh tokens per organization)
 model GoogleAdsConnection {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   // OAuth tokens
-  refreshToken   String
-  accessToken    String?
-  expiresAt      DateTime?
-  scope          String?
+  refreshToken String
+  accessToken  String?
+  expiresAt    DateTime?
+  scope        String?
 
   // Google Ads account info
-  customerId     String   // Google Ads Customer ID
-  customerName   String?
+  customerId      String // Google Ads Customer ID
+  customerName    String?
   loginCustomerId String? // Manager account ID if using MCC
 
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([organizationId, customerId])
+}
+
+model Audit {
+  id       String @id @default(cuid())
+  url      String
+  domain   String
+  industry String
+  location String
+  status   String @default("pending")
+
+  crawlData      Json?
+  pageSpeedData  Json?
+  keywordData    Json?
+  rankingsData   Json?
+  backlinksData  Json?
+  serpData       Json?
+  adsData        Json?
+  competitorData Json?
+  gbpData        Json?
+  metaAdsData    Json?
+  exaData        Json?
+  report         Json?
+
+  notifyEmail           String?
+  viewedAt              DateTime?
+  contactName           String?
+  contactEmail          String?
+  contactPhone          String?
+  contactSubmittedAt    DateTime?
+
+  userId         String?
+  organizationId String?
+  user           User?         @relation(fields: [userId], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import { Globe, Search, Loader2, CheckCircle, XCircle, Clock, AlertTriangle, Download, FileText, History } from 'lucide-react';
+import { Globe, Search, Loader2, CheckCircle, XCircle, Clock, AlertTriangle, Download, FileText, History, Zap, Copy, Info } from 'lucide-react';
 
 interface SiteEntry {
   siteUrl: string;
@@ -33,6 +33,92 @@ export default function GSCPage() {
   const [historySummary, setHistorySummary] = useState<{ total: number; indexed: number; partial: number; notIndexed: number } | null>(null);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+
+  // IndexNow state
+  const [activeTab, setActiveTab] = useState<'inspection' | 'indexnow'>('inspection');
+  const [indexNowHost, setIndexNowHost] = useState('');
+  const [indexNowKey, setIndexNowKey] = useState('');
+  const [indexNowUrls, setIndexNowUrls] = useState('');
+  const [indexNowLoading, setIndexNowLoading] = useState(false);
+  const [indexNowResult, setIndexNowResult] = useState<{ success: boolean; message: string; urlCount?: number } | null>(null);
+  const [indexNowError, setIndexNowError] = useState('');
+
+  // Check hash on mount for deep linking
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#indexnow') {
+      setActiveTab('indexnow');
+    }
+  }, []);
+
+  const generateKey = () => {
+    setIndexNowKey(crypto.randomUUID());
+  };
+
+  const copyKey = () => {
+    navigator.clipboard.writeText(indexNowKey);
+  };
+
+  const submitIndexNow = async () => {
+    if (!indexNowHost || !indexNowKey || !indexNowUrls.trim()) return;
+
+    const urls = indexNowUrls
+      .split('\n')
+      .map((u) => u.trim())
+      .filter(Boolean);
+
+    if (!urls.length) return;
+
+    setIndexNowLoading(true);
+    setIndexNowError('');
+    setIndexNowResult(null);
+
+    try {
+      const res = await fetch('/api/gsc/indexnow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ host: indexNowHost, key: indexNowKey, urls }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || `Submission failed (${res.status})`);
+      }
+
+      setIndexNowResult({
+        success: true,
+        message: data.message,
+        urlCount: data.urlCount,
+      });
+    } catch (err: any) {
+      setIndexNowError(err.message || 'Submission failed');
+    } finally {
+      setIndexNowLoading(false);
+    }
+  };
+
+  const loadSitemapForIndexNow = async () => {
+    if (!indexNowHost) return;
+    setIndexNowError('');
+
+    try {
+      const res = await fetch('/api/sitemap-fetch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ host: indexNowHost }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load sitemap');
+
+      const urls = data.urls || [];
+      if (urls.length) {
+        setIndexNowUrls(urls.join('\n'));
+      } else {
+        setIndexNowError('No URLs found in sitemap.');
+      }
+    } catch (err: any) {
+      setIndexNowError(err.message || 'Failed to load sitemap');
+    }
+  };
 
   // Fetch sites on mount
   useEffect(() => {
@@ -235,8 +321,37 @@ export default function GSCPage() {
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
             <Globe className="h-6 w-6 text-[#EF5744]" />
-            <h1 className="text-2xl font-bold text-white">GSC URL Indexing</h1>
+            <h1 className="text-2xl font-bold text-white">Search Console</h1>
           </div>
+
+          {/* Tabs */}
+          <div className="flex items-center gap-1 mb-8 border-b border-[#2a2a2a]">
+            <button
+              onClick={() => setActiveTab('inspection')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                activeTab === 'inspection'
+                  ? 'border-[#EF5744] text-white'
+                  : 'border-transparent text-[#8b8b93] hover:text-white'
+              }`}
+            >
+              <Search className="h-4 w-4" />
+              URL Inspection
+            </button>
+            <button
+              onClick={() => setActiveTab('indexnow')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                activeTab === 'indexnow'
+                  ? 'border-[#EF5744] text-white'
+                  : 'border-transparent text-[#8b8b93] hover:text-white'
+              }`}
+            >
+              <Zap className="h-4 w-4" />
+              Submit to Bing (IndexNow)
+            </button>
+          </div>
+
+          {/* URL Inspection Tab */}
+          {activeTab === 'inspection' && (<>
           <p className="text-[#a1a1aa] mb-8">
             Check the Google Search Console index status for your URLs. Paste URLs manually or load from your sitemap.
           </p>
@@ -487,6 +602,147 @@ export default function GSCPage() {
             <div className="text-center py-12 text-[#8b8b93] text-sm">
               Select a site and enter URLs to check their index status.
             </div>
+          )}
+          </>
+          )}
+
+          {/* IndexNow Tab */}
+          {activeTab === 'indexnow' && (<>
+            <p className="text-[#a1a1aa] mb-6">
+              Submit URLs to Bing, Yandex, Seznam, Naver, and Copilot for faster discovery via the IndexNow protocol.
+            </p>
+
+            {/* Info box */}
+            <div className="flex items-start gap-3 bg-[#141414] border border-[#2a2a2a] rounded p-4 mb-6">
+              <Info className="h-4 w-4 text-[#EF5744] mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-[#8b8b93]">
+                IndexNow notifies Bing, Yandex, Seznam, Naver, and Copilot. It does not guarantee indexing but significantly speeds up discovery.
+              </p>
+            </div>
+
+            {/* IndexNow Form */}
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded p-6 mb-8">
+              {/* Host */}
+              <div className="mb-4">
+                <label className="block text-sm text-[#a1a1aa] mb-1.5">Host</label>
+                <input
+                  type="text"
+                  value={indexNowHost}
+                  onChange={(e) => setIndexNowHost(e.target.value)}
+                  placeholder="dalyadvertising.com"
+                  className="w-full px-3 py-2 bg-[#141414] border-2 border-[#2a2a2a] text-white rounded text-sm font-mono focus:border-[#EF5744] outline-none transition-colors"
+                />
+              </div>
+
+              {/* API Key */}
+              <div className="mb-4">
+                <label className="block text-sm text-[#a1a1aa] mb-1.5">API Key</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={indexNowKey}
+                    onChange={(e) => setIndexNowKey(e.target.value)}
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    className="flex-1 px-3 py-2 bg-[#141414] border-2 border-[#2a2a2a] text-white rounded text-sm font-mono focus:border-[#EF5744] outline-none transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={generateKey}
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#a1a1aa] hover:text-white border border-[#2a2a2a] rounded transition-colors hover:bg-[rgba(255,255,255,0.05)]"
+                  >
+                    <Zap className="h-3 w-3" />
+                    Generate
+                  </button>
+                  {indexNowKey && (
+                    <button
+                      type="button"
+                      onClick={copyKey}
+                      className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#a1a1aa] hover:text-white border border-[#2a2a2a] rounded transition-colors hover:bg-[rgba(255,255,255,0.05)]"
+                    >
+                      <Copy className="h-3 w-3" />
+                      Copy
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-[#8b8b93] mt-1.5">
+                  Generate any UUID and host it as a <span className="font-mono text-[#a1a1aa]">.txt</span> file at your site root (e.g. <span className="font-mono text-[#a1a1aa]">https://{indexNowHost || 'yoursite.com'}/{indexNowKey || 'your-key'}.txt</span>)
+                </p>
+              </div>
+
+              {/* URLs */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-sm text-[#a1a1aa]">URLs (one per line, max 10,000)</label>
+                  <button
+                    type="button"
+                    onClick={loadSitemapForIndexNow}
+                    disabled={!indexNowHost}
+                    className="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-[#a1a1aa] hover:text-white border border-[#2a2a2a] rounded transition-colors hover:bg-[rgba(255,255,255,0.05)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <FileText className="h-3 w-3" />
+                    Load from Sitemap
+                  </button>
+                </div>
+                <textarea
+                  value={indexNowUrls}
+                  onChange={(e) => setIndexNowUrls(e.target.value)}
+                  placeholder={'https://dalyadvertising.com/page-1\nhttps://dalyadvertising.com/page-2\nhttps://dalyadvertising.com/page-3'}
+                  rows={8}
+                  className="w-full px-3 py-2 bg-[#141414] border-2 border-[#2a2a2a] text-white rounded text-sm font-mono focus:border-[#EF5744] outline-none transition-colors resize-none"
+                />
+                {indexNowUrls.trim() && (
+                  <p className="text-xs text-[#8b8b93] mt-1">
+                    {indexNowUrls.split('\n').filter((u) => u.trim()).length} URLs
+                  </p>
+                )}
+              </div>
+
+              {/* Submit */}
+              <button
+                type="button"
+                onClick={submitIndexNow}
+                disabled={indexNowLoading || !indexNowHost || !indexNowKey || !indexNowUrls.trim()}
+                className="flex items-center gap-2 px-5 py-2 bg-[#c93a2a] hover:bg-[#a83020] text-white rounded text-sm font-semibold disabled:opacity-50 transition-colors"
+              >
+                {indexNowLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="h-4 w-4" />
+                    Submit to Bing
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* IndexNow Error */}
+            {indexNowError && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded p-4 mb-6 text-sm">
+                {indexNowError}
+              </div>
+            )}
+
+            {/* IndexNow Success */}
+            {indexNowResult && indexNowResult.success && (
+              <div className="bg-green-500/10 border border-green-500/30 text-green-400 rounded p-4 mb-6 text-sm flex items-start gap-3">
+                <CheckCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">{indexNowResult.message}</p>
+                  <p className="text-green-400/70 mt-1 font-mono text-xs">{indexNowResult.urlCount} URLs submitted to IndexNow</p>
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {!indexNowLoading && !indexNowError && !indexNowResult && (
+              <div className="text-center py-12 text-[#8b8b93] text-sm">
+                Enter your host, API key, and URLs to submit them to Bing and other search engines.
+              </div>
+            )}
+          </>
           )}
         </div>
       </div>
