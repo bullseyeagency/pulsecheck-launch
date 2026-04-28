@@ -13,7 +13,8 @@ export async function proxy(request: NextRequest) {
   const isAuthenticated = !!token
 
   // Public routes (accessible without login)
-  const publicRoutes = ['/', '/landing', '/auth/signin']
+  const publicRoutes = ['/', '/landing', '/auth/signin', '/scan', '/lp']
+  // /lp/[industry] is also public (startsWith '/lp' covers it)
   const isPublicRoute = publicRoutes.some(route =>
     pathname === route || pathname.startsWith(route + '/')
   )
@@ -25,9 +26,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(signInUrl)
   }
 
-  // Redirect to landing if authenticated and trying to access signin
-  if (isAuthenticated && pathname === '/auth/signin') {
-    return NextResponse.redirect(new URL('/landing', request.url))
+  // Redirect authenticated users away from marketing pages into the app
+  if (isAuthenticated && (pathname === '/' || pathname === '/auth/signin')) {
+    return NextResponse.redirect(new URL('/audit', request.url))
   }
 
   return NextResponse.next()
