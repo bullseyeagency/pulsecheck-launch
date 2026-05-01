@@ -11,14 +11,19 @@ export async function crawlSite(url: string): Promise<CrawlData> {
   const domain = parsed.hostname.replace(/^www\./, "");
   const origin = parsed.origin;
 
-  // Fetch page HTML + robots.txt + sitemap in parallel
-  const [htmlResponse, robotsText, sitemapText] = await Promise.all([
+  // Fetch page HTML + robots.txt + sitemap + about/contact/llms.txt in parallel
+  const [htmlResponse, robotsText, sitemapText, aboutHtml, contactHtml, llmsTxt] = await Promise.all([
     fetchWithTimeout(normalized, 15000),
     fetchTextSafe(`${origin}/robots.txt`),
     fetchTextSafe(`${origin}/sitemap.xml`),
+    fetchTextSafe(`${origin}/about`),
+    fetchTextSafe(`${origin}/contact`),
+    fetchTextSafe(`${origin}/llms.txt`),
   ]);
 
   const html = await htmlResponse.text();
+  // Merge about/contact HTML for NAP/location extraction only
+  const supplementalHtml = [aboutHtml, contactHtml].filter(Boolean).join(' ');
 
   // Parse HTML data
   const title = extractTag(html, "title");
@@ -37,13 +42,29 @@ export async function crawlSite(url: string): Promise<CrawlData> {
   });
 
   const jsonLd = extractJsonLd(html);
+  const supplementalJsonLd = extractJsonLd(supplementalHtml);
   const ogTags = extractOgTags(html);
   const twitterCard = extractTwitterCard(html);
   const internalLinks = extractInternalLinks(html, domain);
   const images = extractImages(html);
   const wordCount = extractWordCount(html);
   const technologies = detectTechnologies(html);
-  const nap = extractNAP(html, jsonLd);
+  // Try homepage first, fall back to about/contact pages for NAP
+  const homeNap = extractNAP(html, jsonLd);
+  const suppNap = extractNAP(supplementalHtml, supplementalJsonLd);
+  const nap = {
+    name: homeNap.name || suppNap.name,
+    address: homeNap.address || suppNap.address,
+    phone: homeNap.phone || suppNap.phone,
+  };
+  // Merge all JSON-LD so detect.ts can use address from any page
+  const allJsonLd = [...jsonLd, ...supplementalJsonLd];
+
+  // Extract plain text from contact/about pages for location detection
+  const supplementalText = [aboutHtml, contactHtml]
+    .map(h => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim())
+    .join(' ')
+    .slice(0, 5000);
 
   return {
     url: normalized,
@@ -54,13 +75,15 @@ export async function crawlSite(url: string): Promise<CrawlData> {
     robotsDirectives,
     headings,
     headingCounts,
-    jsonLd,
+    jsonLd: allJsonLd,
     ogTags,
     twitterCard,
     robotsTxt: robotsText,
     sitemapXml: sitemapText.substring(0, 5000),
     internalLinks: internalLinks.slice(0, 100),
     nap,
+    supplementalText,
+    llmsTxt: llmsTxt || undefined,
     wordCount,
     technologies,
     images: images.slice(0, 50),

@@ -42,6 +42,8 @@ export interface CrawlData {
   sitemapXml: string;
   internalLinks: string[];
   nap: { name: string; address: string; phone: string };
+  supplementalText?: string;
+  llmsTxt?: string;
   wordCount: number;
   technologies: string[];
   images: ImageInfo[];

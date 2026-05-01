@@ -45,14 +45,40 @@ interface AuditData {
   competitors_summary: { domain: string; traffic: number; keywords: number; ads: boolean }[];
   gbp: { found: boolean; rating: number | null; reviews: number | null } | null;
   meta_ads_running: boolean;
+  tiktok_ads_running: boolean;
   category_grades: {
     speed: { grade: string; score: number | null; label: string };
     seo: { grade: string; score: number; label: string };
     local: { grade: string; label: string };
     ads: { grade: string; label: string };
     meta: { grade: string; label: string };
+    tiktok: { grade: string; label: string };
   };
   top_issues: { severity: string; title: string; business_impact: string; category: string }[];
+  geo: {
+    score: number; grade: string; label: string;
+    signals: {
+      blockedBots: string[]; hasLlmsTxt: boolean; hasCanonical: boolean;
+      hasDateModified: boolean; httpsOnly: boolean; hasArticleSchema: boolean;
+      hasFaqSchema: boolean; hasAuthorSchema: boolean; hasOrganizationSchema: boolean;
+    };
+  } | null;
+  eeat: {
+    score: number; grade: string; label: string;
+    dimensions: {
+      experience: { score: number; signals: string[]; missing: string[] };
+      expertise: { score: number; signals: string[]; missing: string[] };
+      authoritativeness: { score: number; signals: string[]; missing: string[] };
+      trustworthiness: { score: number; signals: string[]; missing: string[] };
+    };
+  } | null;
+  ai_mode: { queries: { query: string; clientCited: boolean; citedDomains: string[]; snippet: string }[] } | null;
+  competitor_ads: Record<string, {
+    domain: string;
+    googleAds: { running: boolean; creative_count: number };
+    metaAds: { running: boolean; ad_count: number };
+    tiktokAds: { running: boolean; ad_count: number };
+  }> | null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -252,15 +278,21 @@ function transformAudit(raw: any): AuditData {
     return { keyword: item.keyword || '', volume: vol, competition: item.competition || 'UNKNOWN', ci, cpc: item.cpc || 0, opportunity };
   });
 
+  // Local pack: new shape comes from gbpData.localPack (Record<query, LocalPackEntry[]>)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gbpLocalPack: any[] = (() => {
+    const lp = raw.gbpData?.localPack;
+    if (!lp || typeof lp !== 'object') return [];
+    const firstKey = Object.keys(lp)[0];
+    return firstKey ? (lp[firstKey] || []) : [];
+  })();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const localPack = gbpLocalPack.slice(0, 5).map((item: any, i: number) => ({
+    position: item.position || i + 1, name: item.title || item.name || '', rating: item.rating || 0,
+    reviews: typeof item.reviews === 'number' ? item.reviews : parseInt(String(item.reviews || '').replace(/\D/g, '')) || 0,
+  }));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const organicResults: any[] = serpData.organic?.organic_results || [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const localResults: any[] = serpData.maps?.local_results || [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const localPack = localResults.slice(0, 5).map((item: any, i: number) => ({
-    position: item.position || i + 1, name: item.title || '', rating: item.rating || 0,
-    reviews: typeof item.reviews === 'number' ? item.reviews : parseInt(String(item.reviews).replace(/\D/g, '')) || 0,
-  }));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const organic_top5 = organicResults.slice(0, 5).map((item: any, i: number) => {
     let domain = item.domain || '';
@@ -268,14 +300,11 @@ function transformAudit(raw: any): AuditData {
     return { position: item.position || i + 1, domain, url: item.link || '', keyword: `${raw.industry} ${raw.location}` };
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const targetAds: any[] = adsData.transparency?.ad_creatives || adsData.transparency?.ads || [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const paidAds: any[] = adsData.paidAds?.ads || [];
+  // Ad status: new shape is { running, creative_count, advertiser_id, ... }
   const adStatus = {
-    target_running: targetAds.length > 0,
-    competitors_running: paidAds.length > 0,
-    details: targetAds.length > 0 ? `${targetAds.length} active ad creatives found` : 'No active ads detected',
+    target_running: adsData.running === true,
+    competitors_running: false,
+    details: adsData.running ? `${adsData.creative_count || 0} active ad creatives found` : 'No active ads detected',
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -296,20 +325,32 @@ function transformAudit(raw: any): AuditData {
 
   // --- Business-facing enriched fields ---
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const competitorAdsData: Record<string, any> = raw.competitorAdsData || {};
   const competitors_summary = (raw.competitorData?.competitors || [])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .map((comp: any) => ({
-      domain: comp.domain || '',
-      traffic: comp.traffic || 0,
-      keywords: comp.keywords || 0,
-      ads: false,
-    }));
+    .map((comp: any) => {
+      const domain = comp.domain || '';
+      const compAds = competitorAdsData[domain];
+      const runningAds = compAds
+        ? (compAds.googleAds?.running || compAds.metaAds?.running || compAds.tiktokAds?.running)
+        : false;
+      return {
+        domain,
+        traffic: Math.round(comp.etv || comp.traffic || 0),
+        keywords: comp.intersections || comp.keywords || 0,
+        ads: !!runningAds,
+      };
+    });
 
-  const gbp: AuditData['gbp'] = raw.gbpData
-    ? { found: !!raw.gbpData?.found, rating: raw.gbpData?.rating || null, reviews: raw.gbpData?.reviews || null }
+  // GBP: new shape is { gbp: { found, rating, reviews, ... }, localPack: {...}, clientPackPosition: ... }
+  const gbpRaw = raw.gbpData?.gbp || (raw.gbpData?.found !== undefined ? raw.gbpData : null);
+  const gbp: AuditData['gbp'] = gbpRaw
+    ? { found: !!gbpRaw.found, rating: gbpRaw.rating || null, reviews: gbpRaw.reviews || null }
     : null;
 
   const meta_ads_running: boolean = raw.metaAdsData?.running === true;
+  const tiktok_ads_running: boolean = raw.tiktokAdsData?.running === true;
 
   const mobileScore = extractPsiScore(mobile) ?? scores.pagespeedMobile ?? null;
   const desktopScore = extractPsiScore(desktop) ?? scores.pagespeedDesktop ?? null;
@@ -324,6 +365,9 @@ function transformAudit(raw: any): AuditData {
   const metaGrade = meta_ads_running
     ? { grade: 'A', label: 'Running Meta ads' }
     : { grade: 'F', label: 'Not found on Meta' };
+  const tiktokGrade = tiktok_ads_running
+    ? { grade: 'A', label: `${raw.tiktokAdsData?.ad_count || 0} active TikTok ads` }
+    : { grade: 'F', label: 'Not advertising on TikTok' };
 
   const category_grades = {
     speed: speedGrade,
@@ -331,6 +375,7 @@ function transformAudit(raw: any): AuditData {
     local: localGrade,
     ads: adsGrade,
     meta: metaGrade,
+    tiktok: tiktokGrade,
   };
 
   const impactMap: Record<string, string> = {
@@ -374,8 +419,13 @@ function transformAudit(raw: any): AuditData {
     competitors_summary,
     gbp,
     meta_ads_running,
+    tiktok_ads_running,
     category_grades,
     top_issues,
+    geo: raw.geoData && !(raw.geoData as any).error ? raw.geoData as AuditData['geo'] : null,
+    eeat: raw.eeatData && !(raw.eeatData as any).error ? raw.eeatData as AuditData['eeat'] : null,
+    ai_mode: raw.aiModeData && !(raw.aiModeData as any).error ? raw.aiModeData as AuditData['ai_mode'] : null,
+    competitor_ads: Object.keys(competitorAdsData).length > 0 ? competitorAdsData as AuditData['competitor_ads'] : null,
   };
 }
 
@@ -509,6 +559,56 @@ export default function ScanReportPage() {
     .filter(k => k.opportunity === 'HIGHEST' || k.opportunity === 'HIGH')
     .slice(0, 5);
 
+  // Plain-English conclusions
+  const conclusions = (() => {
+    const points: { icon: string; heading: string; body: string }[] = [];
+    const g = data.overall_grade;
+
+    // Overall verdict
+    if (g === 'A' || g === 'A+') {
+      points.push({ icon: '✓', heading: 'Strong overall presence', body: `${data.domain} is well-optimized and visible online. There are still opportunities to pull further ahead of competitors.` });
+    } else if (g === 'B' || g === 'B+') {
+      points.push({ icon: '↑', heading: 'Good foundation, room to grow', body: `${data.domain} is doing better than average, but competitors are likely outranking you on several important searches.` });
+    } else if (g === 'C' || g === 'C+') {
+      points.push({ icon: '!', heading: 'Visible gaps that are costing you customers', body: `${data.domain} has the basics covered but is losing leads to businesses that have invested more in their online presence.` });
+    } else {
+      points.push({ icon: '✗', heading: 'Customers searching for you can\'t find you', body: `${data.domain} is largely invisible online. Most people searching for ${data.industry} in ${data.location || 'your area'} will land on a competitor's site instead.` });
+    }
+
+    // Speed
+    const sp = data.category_grades.speed;
+    if (sp.grade === 'D' || sp.grade === 'F') {
+      points.push({ icon: '⚡', heading: 'Your website loads too slowly', body: `A slow site drives people away before they ever see your services — especially on mobile. Google also ranks faster sites higher.` });
+    }
+
+    // Local / GBP
+    const lc = data.category_grades.local;
+    if (lc.grade === 'D' || lc.grade === 'F') {
+      points.push({ icon: '📍', heading: 'Hard to find on Google Maps', body: `When someone nearby searches for ${data.industry}, your business may not appear in the map results — sending that customer to a competitor.` });
+    } else if (lc.grade === 'C') {
+      points.push({ icon: '📍', heading: 'Google Maps presence needs work', body: `You\'re listed on Google Maps but your rating or review count is lower than competitors, which reduces how often you get clicked.` });
+    }
+
+    // Keyword opportunity
+    const topOpp = highPriorityOpps[0];
+    if (topOpp) {
+      points.push({ icon: '🔍', heading: `${topOpp.volume.toLocaleString()} people search "${topOpp.keyword}" every month`, body: `That's potential customers you're not reaching. Ranking for this term alone could meaningfully increase your website traffic.` });
+    }
+
+    // Competitor gap
+    const topGap = data.keyword_gap?.[0];
+    if (topGap) {
+      points.push({ icon: '⚔', heading: `${topGap.competitor} is ranking #${topGap.competitor_position} for "${topGap.keyword}"`, body: `That's a search with ${topGap.volume.toLocaleString()} monthly searches where a competitor is taking customers that could be yours.` });
+    }
+
+    // Ads
+    if (data.category_grades.ads.grade === 'F' && data.competitors_summary.length > 0) {
+      points.push({ icon: '📢', heading: 'Competitors may be running ads against your name', body: `If you\'re not running Google Ads, competitors could be showing up at the top of search results when someone looks for your business.` });
+    }
+
+    return points;
+  })();
+
   const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4 } };
 
   return (
@@ -574,6 +674,29 @@ export default function ScanReportPage() {
         </motion.section>
 
         {/* ------------------------------------------------------------------ */}
+        {/* Section 1b: Plain-English Conclusions                              */}
+        {/* ------------------------------------------------------------------ */}
+        {conclusions.length > 0 && (
+          <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.04 }}>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white">What This Means For Your Business</h2>
+              <p className="text-[#8b8b93] text-sm mt-1">The bottom line — no technical jargon.</p>
+            </div>
+            <div className="space-y-3">
+              {conclusions.map((c, i) => (
+                <div key={i} className="bg-[#141414] border border-[#2a2a2a] rounded-xl px-5 py-4 flex items-start gap-4">
+                  <span className="text-lg flex-shrink-0 mt-0.5 w-6 text-center">{c.icon}</span>
+                  <div>
+                    <p className="text-white font-semibold text-sm">{c.heading}</p>
+                    <p className="text-[#a1a1aa] text-sm mt-1 leading-relaxed">{c.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* ------------------------------------------------------------------ */}
         {/* Section 2: Digital Pulse — 5 category scorecards                   */}
         {/* ------------------------------------------------------------------ */}
         <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.05 }}>
@@ -582,7 +705,7 @@ export default function ScanReportPage() {
             <p className="text-[#8b8b93] text-sm mt-1">Five areas that determine whether customers find you — or your competitor.</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
               {
                 icon: <Gauge className="h-4 w-4" />,
@@ -613,6 +736,12 @@ export default function ScanReportPage() {
                 label: 'Meta Ads',
                 grade: data.category_grades.meta.grade,
                 sublabel: data.category_grades.meta.label,
+              },
+              {
+                icon: <Users className="h-4 w-4" />,
+                label: 'TikTok Ads',
+                grade: data.category_grades.tiktok.grade,
+                sublabel: data.category_grades.tiktok.label,
               },
             ].map((card) => (
               <div key={card.label} className={`bg-[#141414] border rounded-xl p-4 flex flex-col items-center text-center ${gradeBg(card.grade)}`}>
@@ -711,6 +840,110 @@ export default function ScanReportPage() {
         )}
 
         {/* ------------------------------------------------------------------ */}
+        {/* Section 4b: Competitor Ad Intelligence                             */}
+        {/* ------------------------------------------------------------------ */}
+        {data.competitor_ads && Object.keys(data.competitor_ads).length > 0 && (
+          <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.16 }}>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white">Competitor Ad Intelligence</h2>
+              <p className="text-[#8b8b93] text-sm mt-1">
+                Where your top competitors are spending ad budget across Google, Meta, and TikTok.
+              </p>
+            </div>
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-[#2a2a2a]">
+                      <th className="text-left px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Competitor</th>
+                      <th className="text-center px-4 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Google Ads</th>
+                      <th className="text-center px-4 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Meta Ads</th>
+                      <th className="text-center px-4 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">TikTok Ads</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.values(data.competitor_ads).map((comp, i) => (
+                      <tr key={comp.domain} className={`border-b border-[#1f1f1f] ${i % 2 === 0 ? 'bg-[#141414]' : 'bg-[#111]'}`}>
+                        <td className="px-5 py-3 text-[#a1a1aa] font-medium">{comp.domain}</td>
+                        <td className="px-4 py-3 text-center">
+                          {comp.googleAds.running ? (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                              {comp.googleAds.creative_count} ads
+                            </span>
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-[#2a2a2a] text-[#555] border-[#2a2a2a]">None</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {comp.metaAds.running ? (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                              {comp.metaAds.ad_count} ads
+                            </span>
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-[#2a2a2a] text-[#555] border-[#2a2a2a]">None</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {comp.tiktokAds.running ? (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                              {comp.tiktokAds.ad_count} ads
+                            </span>
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-[#2a2a2a] text-[#555] border-[#2a2a2a]">None</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </motion.section>
+        )}
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Section 4c: Keyword Gap                                           */}
+        {/* ------------------------------------------------------------------ */}
+        {data.keyword_gap && data.keyword_gap.length > 0 && (
+          <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.18 }}>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white">Competitor Keyword Opportunities</h2>
+              <p className="text-[#8b8b93] text-sm mt-1">
+                Keywords your competitors rank for that you&apos;re missing out on.
+              </p>
+            </div>
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-[#2a2a2a]">
+                      <th className="text-left px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Keyword</th>
+                      <th className="text-left px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium hidden md:table-cell">Competitor</th>
+                      <th className="text-right px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Their Rank</th>
+                      <th className="text-right px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Monthly Searches</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.keyword_gap.slice(0, 15).map((kw, i) => (
+                      <tr key={i} className={`border-b border-[#1f1f1f] hover:bg-[rgba(255,255,255,0.02)] ${i % 2 === 0 ? 'bg-[#141414]' : 'bg-[#111]'}`}>
+                        <td className="px-5 py-3 text-white font-medium">{kw.keyword}</td>
+                        <td className="px-5 py-3 text-[#a1a1aa] hidden md:table-cell">{kw.competitor}</td>
+                        <td className="px-5 py-3 text-right">
+                          <span className={`font-mono font-bold ${kw.competitor_position <= 3 ? 'text-emerald-400' : kw.competitor_position <= 10 ? 'text-blue-400' : 'text-[#a1a1aa]'}`}>
+                            #{kw.competitor_position}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3 text-right text-[#a1a1aa]">{kw.volume.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </motion.section>
+        )}
+
+        {/* ------------------------------------------------------------------ */}
         {/* Section 5: Keyword Opportunities                                   */}
         {/* ------------------------------------------------------------------ */}
         <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.2 }}>
@@ -752,6 +985,141 @@ export default function ScanReportPage() {
             </div>
           )}
         </motion.section>
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Section 5b: E-E-A-T                                               */}
+        {/* ------------------------------------------------------------------ */}
+        {data.eeat && (
+          <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.22 }}>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white">Trust & Authority (E-E-A-T)</h2>
+              <p className="text-[#8b8b93] text-sm mt-1">
+                How Google evaluates your site's Experience, Expertise, Authoritativeness, and Trustworthiness.
+              </p>
+            </div>
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5">
+              <div className="flex items-center gap-4 mb-5">
+                <div className={`w-16 h-16 rounded-xl border-2 flex items-center justify-center flex-shrink-0 ${gradeBg(data.eeat.grade)}`}>
+                  <span className={`text-3xl font-black ${gradeColor(data.eeat.grade)}`}>{data.eeat.grade}</span>
+                </div>
+                <div>
+                  <p className="text-white font-semibold">{data.eeat.label}</p>
+                  <p className="text-[#8b8b93] text-sm mt-0.5">Score: {data.eeat.score}/100</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {(['experience', 'expertise', 'authoritativeness', 'trustworthiness'] as const).map((dim) => {
+                  const d = data.eeat!.dimensions[dim];
+                  const label = { experience: 'Experience', expertise: 'Expertise', authoritativeness: 'Authority', trustworthiness: 'Trust' }[dim];
+                  return (
+                    <div key={dim} className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3">
+                      <p className="text-[#8b8b93] text-[10px] uppercase tracking-wider mb-1">{label}</p>
+                      <p className={`text-2xl font-black ${d.score >= 80 ? 'text-emerald-400' : d.score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>{d.score}<span className="text-xs font-normal text-[#555]">/100</span></p>
+                      {d.missing.length > 0 && (
+                        <p className="text-[#8b8b93] text-[10px] mt-1 leading-tight">{d.missing[0]}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.section>
+        )}
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Section 5c: GEO — AI Search Visibility                             */}
+        {/* ------------------------------------------------------------------ */}
+        {data.geo && (
+          <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.23 }}>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white">AI Search Visibility (GEO)</h2>
+              <p className="text-[#8b8b93] text-sm mt-1">
+                How likely your business is to appear in ChatGPT, Perplexity, and Google AI Overviews.
+              </p>
+            </div>
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5">
+              <div className="flex items-center gap-4 mb-5">
+                <div className={`w-16 h-16 rounded-xl border-2 flex items-center justify-center flex-shrink-0 ${gradeBg(data.geo.grade)}`}>
+                  <span className={`text-3xl font-black ${gradeColor(data.geo.grade)}`}>{data.geo.grade}</span>
+                </div>
+                <div>
+                  <p className="text-white font-semibold">{data.geo.label}</p>
+                  <p className="text-[#8b8b93] text-sm mt-0.5">Score: {data.geo.score}/100</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { label: 'AI Crawlable', pass: data.geo.signals.blockedBots.length === 0, detail: data.geo.signals.blockedBots.length > 0 ? `${data.geo.signals.blockedBots.length} bots blocked` : 'All AI bots allowed' },
+                  { label: 'Content Schema', pass: data.geo.signals.hasArticleSchema || data.geo.signals.hasFaqSchema, detail: data.geo.signals.hasArticleSchema ? 'Article schema' : data.geo.signals.hasFaqSchema ? 'FAQ schema' : 'No content schema' },
+                  { label: 'Author Markup', pass: data.geo.signals.hasAuthorSchema, detail: data.geo.signals.hasAuthorSchema ? 'Author found' : 'No author markup' },
+                  { label: 'llms.txt', pass: data.geo.signals.hasLlmsTxt, detail: data.geo.signals.hasLlmsTxt ? 'File present' : 'Not found' },
+                ].map((item) => (
+                  <div key={item.label} className={`bg-[#1a1a1a] border rounded-lg p-3 ${item.pass ? 'border-emerald-500/20' : 'border-[#2a2a2a]'}`}>
+                    <p className="text-[#8b8b93] text-[10px] uppercase tracking-wider mb-1">{item.label}</p>
+                    <div className={`flex items-center gap-1.5 ${item.pass ? 'text-emerald-400' : 'text-red-400'}`}>
+                      <span className="text-sm font-bold">{item.pass ? '✓' : '✗'}</span>
+                      <span className="text-xs">{item.detail}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {data.geo.signals.blockedBots.length > 0 && (
+                <div className="mt-3 flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+                  <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-300 text-sm">Blocked: {data.geo.signals.blockedBots.join(', ')} — these power ChatGPT, Claude, and Perplexity. Unblock them to appear in AI answers.</p>
+                </div>
+              )}
+            </div>
+          </motion.section>
+        )}
+
+        {/* ------------------------------------------------------------------ */}
+        {/* Section 5d: AI Mode Citation                                       */}
+        {/* ------------------------------------------------------------------ */}
+        {data.ai_mode && data.ai_mode.queries.length > 0 && (
+          <motion.section {...fadeUp} transition={{ duration: 0.4, delay: 0.24 }}>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white">Google AI Overview Citations</h2>
+              <p className="text-[#8b8b93] text-sm mt-1">
+                Whether your business appears in Google's AI-generated answers for key searches.
+              </p>
+            </div>
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl overflow-hidden">
+              {data.ai_mode.queries.map((q, i) => (
+                <div key={i} className={`px-5 py-4 ${i < data.ai_mode!.queries.length - 1 ? 'border-b border-[#1f1f1f]' : ''}`}>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium truncate">&ldquo;{q.query}&rdquo;</p>
+                      {q.snippet && (
+                        <p className="text-[#8b8b93] text-xs mt-1.5 leading-relaxed line-clamp-2">{q.snippet}</p>
+                      )}
+                      {q.citedDomains.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {q.citedDomains.slice(0, 5).map((d, j) => (
+                            <span key={j} className={`inline-block px-2 py-0.5 rounded text-[10px] border ${d === data.domain.replace(/^www\./, '') ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30 font-semibold' : 'bg-[#1e1e1e] text-[#8b8b93] border-[#2a2a2a]'}`}>
+                              {d}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border ${q.clientCited ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
+                        {q.clientCited ? '✓ Cited' : '✗ Not cited'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {data.ai_mode.queries.every(q => !q.clientCited) && (
+              <div className="mt-3 flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-3">
+                <AlertCircle className="h-4 w-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                <p className="text-yellow-300 text-sm">Your site isn't appearing in Google AI answers for these searches. Improving E-E-A-T signals, structured data, and content depth can increase your chances of being cited.</p>
+              </div>
+            )}
+          </motion.section>
+        )}
 
         {/* ------------------------------------------------------------------ */}
         {/* Section 6: CTA                                                     */}

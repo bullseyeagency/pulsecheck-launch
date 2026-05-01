@@ -35,7 +35,7 @@ export function detectIssues(
   }
 
   // Headings
-  const h1Count = crawlData.headingCounts["h1"] || 0;
+  const h1Count = crawlData.headingCounts?.["h1"] || 0;
   if (h1Count === 0) {
     issues.push(issue("missing-h1", "Missing H1 Tag", "No H1 heading found. Every page should have exactly one H1.", "critical", "On-Page"));
   } else if (h1Count > 1) {
@@ -43,15 +43,15 @@ export function detectIssues(
   }
 
   // Schema / Structured Data
-  if (crawlData.jsonLd.length === 0) {
+  if (!crawlData.jsonLd?.length) {
     issues.push(issue("no-schema", "No Structured Data (JSON-LD)", "No JSON-LD structured data found. Adding schema markup improves rich snippet eligibility.", "high", "Structured Data"));
   }
 
   // Open Graph
-  if (!crawlData.ogTags.title || !crawlData.ogTags.description) {
+  if (!crawlData.ogTags?.title || !crawlData.ogTags?.description) {
     issues.push(issue("incomplete-og", "Incomplete Open Graph Tags", "Missing OG title or description. Social shares will not display optimally.", "medium", "Social"));
   }
-  if (!crawlData.ogTags.image) {
+  if (!crawlData.ogTags?.image) {
     issues.push(issue("no-og-image", "Missing OG Image", "No og:image tag found. Social shares will lack a preview image.", "medium", "Social"));
   }
 
@@ -66,10 +66,11 @@ export function detectIssues(
   }
 
   // Images without alt text
-  const noAltImages = crawlData.images.filter((img) => !img.hasAlt);
+  const images = crawlData.images || [];
+  const noAltImages = images.filter((img) => !img.hasAlt);
   if (noAltImages.length > 0) {
-    const pct = Math.round((noAltImages.length / crawlData.images.length) * 100);
-    issues.push(issue("images-no-alt", "Images Missing Alt Text", `${noAltImages.length} of ${crawlData.images.length} images (${pct}%) lack alt text. Alt text improves accessibility and image SEO.`, noAltImages.length > 5 ? "high" : "medium", "Accessibility"));
+    const pct = Math.round((noAltImages.length / images.length) * 100);
+    issues.push(issue("images-no-alt", "Images Missing Alt Text", `${noAltImages.length} of ${images.length} images (${pct}%) lack alt text. Alt text improves accessibility and image SEO.`, noAltImages.length > 5 ? "high" : "medium", "Accessibility"));
   }
 
   // Word count
@@ -78,10 +79,10 @@ export function detectIssues(
   }
 
   // Robots directives
-  if (crawlData.robotsDirectives.includes("noindex")) {
+  if (crawlData.robotsDirectives?.includes("noindex")) {
     issues.push(issue("noindex", "Page Set to Noindex", "This page has a noindex directive and will not appear in search results.", "critical", "Technical"));
   }
-  if (crawlData.robotsDirectives.includes("nofollow")) {
+  if (crawlData.robotsDirectives?.includes("nofollow")) {
     issues.push(issue("nofollow", "Page Set to Nofollow", "This page has a nofollow directive. Links on this page will not pass authority.", "high", "Technical"));
   }
 

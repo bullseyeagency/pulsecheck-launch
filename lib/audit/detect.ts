@@ -109,17 +109,33 @@ function detectLocation(crawlData: CrawlData): string {
     return crawlData.nap.address;
   }
 
-  // Scan title, meta, headings, and OG tags for location signals
+  // Scan title, meta, headings, OG tags, and contact/about page text for location signals
   const headingText = crawlData.headings.map((h) => h.text).join(' ');
   const ogLocation = crawlData.ogTags?.description || '';
-  const text = `${crawlData.title} ${crawlData.metaDescription} ${headingText} ${ogLocation}`;
+  const text = `${crawlData.title} ${crawlData.metaDescription} ${headingText} ${ogLocation} ${crawlData.supplementalText || ''}`;
 
-  // "City, ST" pattern (e.g. "Phoenix, AZ")
-  const cityStateMatch = text.match(
-    /\b([A-Z][a-z]+(?:\s[A-Z][a-z]+)?),?\s+([A-Z]{2})\b/
+  // "City, ST" pattern (e.g. "Phoenix, AZ") — only accept real US state abbreviations
+  const US_STATES = new Set(['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC']);
+  const cityStateRegex = /\b([A-Z][a-z]+(?:\s[A-Z][a-z]+)?),?\s+([A-Z]{2})\b/g;
+  let cityStateMatch;
+  while ((cityStateMatch = cityStateRegex.exec(text)) !== null) {
+    if (US_STATES.has(cityStateMatch[2])) {
+      return `${cityStateMatch[1]}, ${cityStateMatch[2]}`;
+    }
+  }
+
+  // "in/for/serving [Location]" pattern (e.g. "for Tampa Bay", "serving Las Vegas")
+  // Max 2 words to avoid grabbing "Tampa Bay Homes" or "Las Vegas Businesses"
+  const serviceAreaMatch = text.match(
+    /\b(?:in|for|serving|near|across|throughout)\s+(?:the\s+)?([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\b/
   );
-  if (cityStateMatch) {
-    return `${cityStateMatch[1]}, ${cityStateMatch[2]}`;
+  if (serviceAreaMatch) {
+    const candidate = serviceAreaMatch[1].trim();
+    const notLocations = new Set(['Our', 'All', 'The', 'Your', 'Any', 'Each', 'Every', 'Most', 'More', 'Homes', 'Businesses', 'Homeowners', 'Residents', 'Customers', 'Clients']);
+    const lastWord = candidate.split(' ').pop() || '';
+    if (!notLocations.has(candidate.split(' ')[0]) && !notLocations.has(lastWord)) {
+      return candidate;
+    }
   }
 
   // Phone area code → state fallback

@@ -11,6 +11,7 @@ import { runEeatAudit } from "@/lib/audit/eeat";
 import { CrawlData } from "@/lib/audit/types";
 import { Prisma } from "@prisma/client";
 import { getBusinessName } from "@/lib/audit/steps/shared";
+import { sendAuditReadySms } from "@/lib/sms";
 import { runPageSpeed } from "@/lib/audit/steps/pagespeed";
 import { runDomainOverview } from "@/lib/audit/steps/domain-overview";
 import { runRankedKeywords } from "@/lib/audit/steps/rankings";
@@ -30,13 +31,15 @@ import { runCompetitorAds } from "@/lib/audit/steps/competitor-ads";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { url, domain, industry, location, crawlData, notifyEmail } = body as {
+    const { url, domain, industry, location, crawlData, notifyEmail, notifyPhone, contactName } = body as {
       url: string;
       domain: string;
       industry: string;
       location: string;
       crawlData: CrawlData;
       notifyEmail?: string;
+      notifyPhone?: string;
+      contactName?: string;
     };
 
     if (!url || !domain) {
@@ -67,6 +70,8 @@ export async function POST(request: NextRequest) {
         status: "running",
         crawlData: crawlData as unknown as Prisma.InputJsonValue,
         ...(notifyEmail && { notifyEmail }),
+        ...(notifyPhone && { contactPhone: notifyPhone }),
+        ...(contactName && { contactName }),
         ...(userId && { userId }),
         ...(organizationId && { organizationId }),
       },
@@ -79,6 +84,7 @@ export async function POST(request: NextRequest) {
       location: location || "United States",
       crawlData,
       notifyEmail: audit.notifyEmail ?? undefined,
+      notifyPhone: audit.contactPhone ?? undefined,
     });
 
     return NextResponse.json({ id: audit.id });
@@ -124,9 +130,10 @@ async function processAuditBackground(
     location: string;
     crawlData: CrawlData;
     notifyEmail?: string;
+    notifyPhone?: string;
   }
 ) {
-  const { url, domain, industry, location, crawlData, notifyEmail } = params;
+  const { url, domain, industry, location, crawlData, notifyEmail, notifyPhone } = params;
   const businessName = getBusinessName(crawlData, domain);
 
   try {
@@ -168,7 +175,7 @@ async function processAuditBackground(
     ]);
 
     // ── Phase 4: Compile report ───────────────────────────────────────────────
-    await compileAndFinalize(auditId, crawlData, { domain, industry, location, notifyEmail });
+    await compileAndFinalize(auditId, crawlData, { domain, industry, location, notifyEmail, notifyPhone });
   } catch (err) {
     console.error("[audit/run] background processing failed:", err);
     await prisma.audit.update({
@@ -183,9 +190,9 @@ async function processAuditBackground(
 async function compileAndFinalize(
   auditId: string,
   crawlData: CrawlData,
-  params: { domain: string; industry: string; location: string; notifyEmail?: string }
+  params: { domain: string; industry: string; location: string; notifyEmail?: string; notifyPhone?: string }
 ) {
-  const { domain, industry, location, notifyEmail } = params;
+  const { domain, industry, location, notifyEmail, notifyPhone } = params;
 
   const auditRecord = await prisma.audit.findUnique({ where: { id: auditId } });
   if (!auditRecord) return;
@@ -271,6 +278,14 @@ async function compileAndFinalize(
       industry,
       location,
     }).catch((err) => console.error("[audit/run] email failed:", err));
+  }
+
+  if (notifyPhone) {
+    sendAuditReadySms({
+      phone: notifyPhone,
+      domain,
+      auditId,
+    }).catch((err) => console.error("[audit/run] sms failed:", err));
   }
 }
 
