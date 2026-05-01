@@ -174,8 +174,13 @@ model Audit {
   adsData        Json?
   competitorData Json?
   gbpData        Json?
-  metaAdsData    Json?
-  exaData        Json?
+  metaAdsData       Json?
+  exaData           Json?
+  tiktokAdsData     Json?
+  aiModeData        Json?
+  competitorAdsData Json?
+  geoData           Json?
+  eeatData       Json?
   report         Json?
 
   notifyEmail           String?
