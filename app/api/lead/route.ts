@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { crawlSite } from "@/lib/audit/crawl";
+import { detectIndustryAndLocation } from "@/lib/audit/detect";
 
 const VERTICAL_TO_INDUSTRY: Record<string, string> = {
   "HVAC": "hvac",
@@ -47,12 +48,16 @@ export async function POST(req: NextRequest) {
 
     const cleanDomain = domain.replace(/^https?:\/\/(www\.)?/, "").split("/")[0].toLowerCase();
     const url = `https://${cleanDomain}`;
-    const industry = VERTICAL_TO_INDUSTRY[vertical ?? ""] || vertical?.toLowerCase() || "home services";
 
     // Crawl the site so the audit has real on-page data
     let crawlData;
+    let detectedIndustry = "home services";
+    let detectedLocation = "United States";
     try {
       crawlData = await crawlSite(url);
+      const detected = detectIndustryAndLocation(crawlData);
+      detectedIndustry = detected.industry || detectedIndustry;
+      detectedLocation = detected.location || detectedLocation;
     } catch {
       crawlData = {
         url, domain: cleanDomain, title: companyName || cleanDomain,
@@ -63,6 +68,9 @@ export async function POST(req: NextRequest) {
       };
     }
 
+    const industry = VERTICAL_TO_INDUSTRY[vertical ?? ""] || vertical?.toLowerCase() || detectedIndustry;
+    const location = detectedLocation;
+
     const res = await fetch(new URL("/api/audit/run", req.url).toString(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,7 +78,7 @@ export async function POST(req: NextRequest) {
         url,
         domain: cleanDomain,
         industry,
-        location: "Tampa, FL",
+        location,
         crawlData,
         notifyEmail: email,
         notifyPhone: phone,
