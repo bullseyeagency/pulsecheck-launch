@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -7,44 +8,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Multi-tenant: Organizations
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  users                User[]
-  subscriptions        Subscription[]
+  id                   String                @id @default(cuid())
+  name                 String
+  slug                 String                @unique
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  audits               Audit[]
   googleAdsAccounts    GoogleAdsAccount[]
   googleAdsConnections GoogleAdsConnection[]
-  audits               Audit[]
+  subscriptions        Subscription[]
+  users                User[]
 }
 
-// Users (belongs to Organization)
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Multi-tenant (optional during creation, assigned in onboarding)
+  id             String        @id @default(cuid())
+  email          String        @unique
+  name           String?
+  emailVerified  DateTime?
+  image          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   organizationId String?
+  role           String        @default("member")
+  accounts       Account[]
+  audits         Audit[]
+  sessions       Session[]
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  role           String        @default("member") // owner, admin, member
-
-  // Auth
-  accounts Account[]
-  sessions Session[]
-  audits   Audit[]
 }
 
-// NextAuth Account model
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -58,13 +50,11 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
-// NextAuth Session model
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -73,7 +63,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// NextAuth Verification Token
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -82,46 +71,38 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Stripe Subscription
 model Subscription {
-  id             String       @id @default(cuid())
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  stripeCustomerId       String    @unique
-  stripeSubscriptionId   String?   @unique
+  id                     String       @id @default(cuid())
+  organizationId         String
+  stripeCustomerId       String       @unique
+  stripeSubscriptionId   String?      @unique
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
-
-  status String @default("trialing") // trialing, active, canceled, past_due
-  plan   String @default("free") // free, pro, enterprise
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status                 String       @default("trialing")
+  plan                   String       @default("free")
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  organization           Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
-// Google Ads Accounts (per organization)
 model GoogleAdsAccount {
-  id             String       @id @default(cuid())
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
+  id               String       @id @default(cuid())
+  organizationId   String
   accountId        String
   accountName      String
   managerAccountId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, accountId])
 }
 
-// GSC URL Inspection Log
 model GscInspection {
   id             String   @id @default(cuid())
   siteUrl        String
   pageUrl        String
-  verdict        String // PASS, PARTIAL, FAIL, NEUTRAL, ERROR
+  verdict        String
   coverageState  String?
   lastCrawlTime  String?
   crawledAs      String?
@@ -133,68 +114,58 @@ model GscInspection {
   @@index([siteUrl, checkedAt])
 }
 
-// Google Ads API OAuth Connection (stores refresh tokens per organization)
 model GoogleAdsConnection {
-  id             String       @id @default(cuid())
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  // OAuth tokens
-  refreshToken String
-  accessToken  String?
-  expiresAt    DateTime?
-  scope        String?
-
-  // Google Ads account info
-  customerId      String // Google Ads Customer ID
+  id              String       @id @default(cuid())
+  organizationId  String
+  refreshToken    String
+  accessToken     String?
+  expiresAt       DateTime?
+  scope           String?
+  customerId      String
   customerName    String?
-  loginCustomerId String? // Manager account ID if using MCC
-
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  loginCustomerId String?
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, customerId])
 }
 
 model Audit {
-  id       String @id @default(cuid())
-  url      String
-  domain   String
-  industry String
-  location String
-  status   String @default("pending")
-
-  crawlData      Json?
-  pageSpeedData  Json?
-  keywordData    Json?
-  rankingsData   Json?
-  backlinksData  Json?
-  serpData       Json?
-  adsData        Json?
-  competitorData Json?
-  gbpData        Json?
-  metaAdsData       Json?
-  exaData           Json?
-  tiktokAdsData     Json?
-  aiModeData        Json?
-  competitorAdsData Json?
-  geoData           Json?
-  eeatData       Json?
-  report         Json?
-
-  notifyEmail           String?
-  viewedAt              DateTime?
-  contactName           String?
-  contactEmail          String?
-  contactPhone          String?
-  contactSubmittedAt    DateTime?
-
-  userId         String?
-  organizationId String?
-  user           User?         @relation(fields: [userId], references: [id])
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String        @id @default(cuid())
+  url                String
+  domain             String
+  industry           String
+  location           String
+  status             String        @default("pending")
+  crawlData          Json?
+  pageSpeedData      Json?
+  keywordData        Json?
+  rankingsData       Json?
+  backlinksData      Json?
+  serpData           Json?
+  adsData            Json?
+  competitorData     Json?
+  report             Json?
+  userId             String?
+  organizationId     String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  notifyEmail        String?
+  viewedAt           DateTime?
+  exaData            Json?
+  gbpData            Json?
+  metaAdsData        Json?
+  contactEmail       String?
+  contactName        String?
+  contactPhone       String?
+  contactSubmittedAt DateTime?
+  eeatData           Json?
+  geoData            Json?
+  aiModeData         Json?
+  competitorAdsData  Json?
+  tiktokAdsData      Json?
+  organization       Organization? @relation(fields: [organizationId], references: [id])
+  user               User?         @relation(fields: [userId], references: [id])
 }
