@@ -11,17 +11,30 @@ export async function crawlSite(url: string): Promise<CrawlData> {
   const domain = parsed.hostname.replace(/^www\./, "");
   const origin = parsed.origin;
 
-  // Fetch page HTML + robots.txt + sitemap + about/contact/llms.txt in parallel
-  const [htmlResponse, robotsText, sitemapText, aboutHtml, contactHtml, llmsTxt] = await Promise.all([
+  // Phase 1: Fetch homepage, robots, sitemap, llms.txt in parallel
+  const [htmlResponse, robotsText, sitemapText, llmsTxt] = await Promise.all([
     fetchWithTimeout(normalized, 15000),
     fetchTextSafe(`${origin}/robots.txt`),
     fetchTextSafe(`${origin}/sitemap.xml`),
-    fetchTextSafe(`${origin}/about`),
-    fetchTextSafe(`${origin}/contact`),
     fetchTextSafe(`${origin}/llms.txt`),
   ]);
 
   const html = await htmlResponse.text();
+
+  // Phase 2: Use sitemap to find real about/contact URLs, then fetch them
+  // Fall back to scanning homepage links, then common guesses
+  const sitemapUrls = await extractSitemapUrls(sitemapText, origin);
+  const homeLinks = extractInternalLinks(html, domain).map(l =>
+    l.startsWith('http') ? l : `${origin}${l.startsWith('/') ? l : '/' + l}`
+  );
+  const allUrls = [...new Set([...sitemapUrls, ...homeLinks])];
+  const aboutUrl = allUrls.find(u => /\/(about|about-us|our-story|our-company|who-we-are)(\/|$)/i.test(u)) ?? `${origin}/about-us`;
+  const contactUrl = allUrls.find(u => /\/(contact|contact-us|get-in-touch|reach-us)(\/|$)/i.test(u)) ?? `${origin}/contact`;
+  const [aboutHtml, contactHtml] = await Promise.all([
+    fetchTextSafe(aboutUrl),
+    fetchTextSafe(contactUrl),
+  ]);
+
   // Merge about/contact HTML for NAP/location extraction only
   const supplementalHtml = [aboutHtml, contactHtml].filter(Boolean).join(' ');
 
@@ -107,6 +120,30 @@ async function fetchWithTimeout(url: string, ms: number): Promise<Response> {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+/**
+ * Extracts all page URLs from a sitemap or sitemap index.
+ * If it's an index, fetches sub-sitemaps tagged as "page" (or all of them) to find real URLs.
+ */
+async function extractSitemapUrls(sitemapXml: string, origin: string): Promise<string[]> {
+  if (!sitemapXml) return [];
+
+  const locs = [...sitemapXml.matchAll(/<loc>\s*(https?:\/\/[^\s<]+)\s*<\/loc>/gi)]
+    .map(m => m[1].trim());
+
+  // Sitemap index: locs are sub-sitemap .xml files, not actual pages
+  if (sitemapXml.includes('<sitemapindex')) {
+    // Prefer a "page" sub-sitemap; fall back to all sub-sitemaps
+    const subSitemaps = locs.filter(l => l.endsWith('.xml'));
+    const preferred = subSitemaps.find(l => /page/i.test(l)) ?? subSitemaps[0];
+    if (!preferred) return [];
+    const subXml = await fetchTextSafe(preferred);
+    return [...subXml.matchAll(/<loc>\s*(https?:\/\/[^\s<]+)\s*<\/loc>/gi)]
+      .map(m => m[1].trim());
+  }
+
+  return locs;
 }
 
 async function fetchTextSafe(url: string): Promise<string> {
