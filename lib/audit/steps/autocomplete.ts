@@ -28,6 +28,18 @@ export async function runAutocomplete(
     )
   );
 
+  // Extract state abbreviation from location (e.g. "Tampa, FL" → "fl")
+  const stateMatch = location.match(/,\s*([A-Z]{2})$/i);
+  const clientState = stateMatch ? stateMatch[1].toLowerCase() : null;
+  const US_STATES = ["al","ak","az","ar","ca","co","ct","de","fl","ga","hi","id","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt","ne","nv","nh","nj","nm","ny","nc","nd","oh","ok","or","pa","ri","sc","sd","tn","tx","ut","vt","va","wa","wv","wi","wy"];
+
+  function isWrongLocation(seed: string): boolean {
+    if (!clientState) return false;
+    const lower = seed.toLowerCase();
+    // If seed contains another US state abbreviation as a word, it's from a different market
+    return US_STATES.some((st) => st !== clientState && new RegExp(`\\b${st}\\b`).test(lower));
+  }
+
   const seeds: string[] = [];
   const seen = new Set<string>();
 
@@ -36,7 +48,7 @@ export async function runAutocomplete(
     const suggestions: any[] = (result.value as any)?.suggestions || [];
     for (const s of suggestions) {
       const val = (s.value as string || "").trim();
-      if (val && !seen.has(val)) {
+      if (val && !seen.has(val) && !isWrongLocation(val)) {
         seen.add(val);
         seeds.push(val);
       }

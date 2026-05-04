@@ -42,7 +42,7 @@ interface AuditData {
   keyword_gap: { keyword: string; competitor: string; competitor_position: number; volume: number }[];
   recommendations: { priority: string; category: string; title: string; description: string; impact: string }[];
   // Business-facing enriched fields
-  competitors_summary: { domain: string; traffic: number; keywords: number; ads: boolean }[];
+  competitors_summary: { name: string; domain: string; position: number; rating: number; reviews: number }[];
   gbp: { found: boolean; rating: number | null; reviews: number | null } | null;
   meta_ads_running: boolean;
   tiktok_ads_running: boolean;
@@ -77,7 +77,6 @@ interface AuditData {
     domain: string;
     googleAds: { running: boolean; creative_count: number };
     metaAds: { running: boolean; ad_count: number };
-    tiktokAds: { running: boolean; ad_count: number };
   }> | null;
 }
 
@@ -327,21 +326,15 @@ function transformAudit(raw: any): AuditData {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const competitorAdsData: Record<string, any> = raw.competitorAdsData || {};
-  const competitors_summary = (raw.competitorData?.competitors || [])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .map((comp: any) => {
-      const domain = comp.domain || '';
-      const compAds = competitorAdsData[domain];
-      const runningAds = compAds
-        ? (compAds.googleAds?.running || compAds.metaAds?.running || compAds.tiktokAds?.running)
-        : false;
-      return {
-        domain,
-        traffic: Math.round(comp.etv || comp.traffic || 0),
-        keywords: comp.intersections || comp.keywords || 0,
-        ads: !!runningAds,
-      };
-    });
+  // Build competitive snapshot from local pack (real business names, pack positions, ratings)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const competitors_summary = gbpLocalPack.slice(0, 5).map((item: any, i: number) => ({
+    name: item.title || item.name || `Competitor ${i + 1}`,
+    domain: '',
+    position: item.position || i + 1,
+    rating: item.rating || 0,
+    reviews: typeof item.reviews === 'number' ? item.reviews : parseInt(String(item.reviews || '').replace(/\D/g, '')) || 0,
+  }));
 
   // GBP: new shape is { gbp: { found, rating, reviews, ... }, localPack: {...}, clientPackPosition: ... }
   const gbpRaw = raw.gbpData?.gbp || (raw.gbpData?.found !== undefined ? raw.gbpData : null);
@@ -802,34 +795,36 @@ export default function ScanReportPage() {
                   <thead>
                     <tr className="border-b border-[#2a2a2a]">
                       <th className="text-left px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Business</th>
-                      <th className="text-right px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Est. Monthly Traffic</th>
-                      <th className="text-right px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Keywords Ranking</th>
-                      <th className="text-center px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Running Ads</th>
+                      <th className="text-center px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Pack Rank</th>
+                      <th className="text-right px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Rating</th>
+                      <th className="text-right px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Reviews</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* Your row */}
                     <tr className="border-b border-[#2a2a2a] border-l-2 border-l-[#EF5744] bg-[#EF5744]/5">
                       <td className="px-5 py-3 text-white font-semibold">You ({data.domain})</td>
-                      <td className="px-5 py-3 text-right text-white font-semibold">{data.est_monthly_traffic.toLocaleString()}</td>
-                      <td className="px-5 py-3 text-right text-white font-semibold">{data.ranked_keywords_count.toLocaleString()}</td>
                       <td className="px-5 py-3 text-center">
-                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border ${data.ad_status.target_running ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-[#2a2a2a] text-[#8b8b93] border-[#2a2a2a]'}`}>
-                          {data.ad_status.target_running ? 'Yes' : 'No'}
-                        </span>
+                        {data.gbp?.found ? (
+                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-[#2a2a2a] text-[#8b8b93] border-[#2a2a2a]">Not in pack</span>
+                        ) : (
+                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-red-500/15 text-red-400 border-red-500/30">No listing</span>
+                        )}
                       </td>
+                      <td className="px-5 py-3 text-right text-white font-semibold">{data.gbp?.rating ? `⭐ ${data.gbp.rating}` : '—'}</td>
+                      <td className="px-5 py-3 text-right text-white font-semibold">{data.gbp?.reviews ? data.gbp.reviews.toLocaleString() : '—'}</td>
                     </tr>
                     {/* Competitor rows */}
-                    {data.competitors_summary.slice(0, 3).map((comp, i) => (
+                    {data.competitors_summary.slice(0, 5).map((comp, i) => (
                       <tr key={i} className={`border-b border-[#1f1f1f] ${i % 2 === 0 ? 'bg-[#141414]' : 'bg-[#111]'}`}>
-                        <td className="px-5 py-3 text-[#a1a1aa]">{comp.domain}</td>
-                        <td className="px-5 py-3 text-right text-[#a1a1aa]">{comp.traffic.toLocaleString()}</td>
-                        <td className="px-5 py-3 text-right text-[#a1a1aa]">{comp.keywords.toLocaleString()}</td>
+                        <td className="px-5 py-3 text-[#a1a1aa]">{comp.name}</td>
                         <td className="px-5 py-3 text-center">
-                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border ${comp.ads ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-[#2a2a2a] text-[#8b8b93] border-[#2a2a2a]'}`}>
-                            {comp.ads ? 'Yes' : 'No'}
+                          <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold border ${comp.position <= 3 ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-[#2a2a2a] text-[#8b8b93] border-[#2a2a2a]'}`}>
+                            #{comp.position}
                           </span>
                         </td>
+                        <td className="px-5 py-3 text-right text-[#a1a1aa]">{comp.rating ? `⭐ ${comp.rating}` : '—'}</td>
+                        <td className="px-5 py-3 text-right text-[#a1a1aa]">{comp.reviews ? comp.reviews.toLocaleString() : '—'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -847,7 +842,7 @@ export default function ScanReportPage() {
             <div className="mb-4">
               <h2 className="text-xl font-bold text-white">Competitor Ad Intelligence</h2>
               <p className="text-[#8b8b93] text-sm mt-1">
-                Where your top competitors are spending ad budget across Google, Meta, and TikTok.
+                Where your top competitors are spending ad budget across Google and Meta.
               </p>
             </div>
             <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl overflow-hidden">
@@ -858,7 +853,6 @@ export default function ScanReportPage() {
                       <th className="text-left px-5 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Competitor</th>
                       <th className="text-center px-4 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Google Ads</th>
                       <th className="text-center px-4 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">Meta Ads</th>
-                      <th className="text-center px-4 py-3 text-[#8b8b93] text-xs uppercase tracking-wider font-medium">TikTok Ads</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -878,15 +872,6 @@ export default function ScanReportPage() {
                           {comp.metaAds.running ? (
                             <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
                               {comp.metaAds.ad_count} ads
-                            </span>
-                          ) : (
-                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-[#2a2a2a] text-[#555] border-[#2a2a2a]">None</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          {comp.tiktokAds.running ? (
-                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
-                              {comp.tiktokAds.ad_count} ads
                             </span>
                           ) : (
                             <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase border bg-[#2a2a2a] text-[#555] border-[#2a2a2a]">None</span>

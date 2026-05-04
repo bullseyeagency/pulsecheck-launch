@@ -66,7 +66,14 @@ export async function dataForSEOPostRaw(
 
 export function getBusinessName(crawlData: CrawlData, domain: string): string {
   const nap = (crawlData as any)?.nap;
-  return nap?.name || (crawlData as any)?.title || domain;
+  if (nap?.name) return nap.name;
+
+  // Humanize the domain as brand name — more reliable than parsing generic page titles
+  // e.g. "callhometherapist.com" → "callhometherapist", "nmi-fence.com" → "nmi fence"
+  return domain
+    .replace(/\.(com|net|org|io|co|us)$/, "")
+    .replace(/[-_]/g, " ")
+    .trim();
 }
 
 // Domains that are never real local business competitors

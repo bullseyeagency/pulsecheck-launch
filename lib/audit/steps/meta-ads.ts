@@ -37,23 +37,18 @@ export async function runMetaAds(
     // fall through to keyword fallback
   }
 
-  // Step 2: pull ads by page_id, or keyword fallback
+  // No page_id = can't confirm this is the right brand; keyword fallback returns too many false positives
+  if (!pageId) return empty;
+
+  // Step 2: pull ads by page_id only
   let adsResult: any = null;
   try {
-    if (pageId) {
-      adsResult = await searchSerpAPI({
-        engine: "meta_ad_library",
-        page_id: pageId,
-        country: "US",
-        sort_by: "impressions_high_to_low",
-      });
-    } else {
-      adsResult = await searchSerpAPI({
-        engine: "meta_ad_library",
-        q: businessName,
-        country: "US",
-      });
-    }
+    adsResult = await searchSerpAPI({
+      engine: "meta_ad_library",
+      page_id: pageId,
+      country: "US",
+      sort_by: "impressions_high_to_low",
+    });
   } catch {
     return empty;
   }
