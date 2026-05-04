@@ -25,16 +25,21 @@ export async function runMetaAds(
     sample: { headline: null, cta: null, format: null },
   };
 
-  // Step 1: find page_id via page search
+  // Step 1: find page_id via page search — try multiple name variants
   let pageId: string | null = null;
-  try {
-    const pageSearch = await searchSerpAPI({
-      engine: "meta_ad_library_page_search",
-      q: businessName,
-    });
-    pageId = (pageSearch as any)?.page_results?.[0]?.page_id ?? null;
-  } catch {
-    // fall through to keyword fallback
+  const domainBase = _domain.replace(/\.(com|net|org|io|co|us)$/, "").replace(/[-_]/g, " ").trim();
+  const queries = [...new Set([businessName, domainBase])].filter(Boolean);
+  for (const q of queries) {
+    try {
+      const pageSearch = await searchSerpAPI({
+        engine: "meta_ad_library_page_search",
+        q,
+      });
+      pageId = (pageSearch as any)?.page_results?.[0]?.page_id ?? null;
+      if (pageId) break;
+    } catch {
+      // try next variant
+    }
   }
 
   // No page_id = can't confirm this is the right brand; keyword fallback returns too many false positives

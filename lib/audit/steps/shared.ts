@@ -68,12 +68,17 @@ export function getBusinessName(crawlData: CrawlData, domain: string): string {
   const nap = (crawlData as any)?.nap;
   if (nap?.name) return nap.name;
 
-  // Humanize the domain as brand name — more reliable than parsing generic page titles
-  // e.g. "callhometherapist.com" → "callhometherapist", "nmi-fence.com" → "nmi fence"
-  return domain
+  // Strip TLD and separators
+  let name = domain
     .replace(/\.(com|net|org|io|co|us)$/, "")
     .replace(/[-_]/g, " ")
     .trim();
+
+  // Strip common call-to-action prefixes that aren't part of the brand name
+  // e.g. "call home therapist" → "home therapist", "get nmi fence" → "nmi fence"
+  name = name.replace(/^(call|get|my|the|best|find|hire|book|try|visit|go|see)\s+/i, "").trim();
+
+  return name;
 }
 
 // Domains that are never real local business competitors
