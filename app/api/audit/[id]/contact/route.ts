@@ -49,7 +49,8 @@ export async function POST(
     // Notify Daly Advertising of new lead
     getResend()?.emails.send({
       from: "PulseCheck <noreply@dalyadvertising.com>",
-      to: "marco@thebullseye.agency",
+      replyTo: email,
+      to: "marco@dalyadvertising.com",
       subject: `New audit lead: ${name || email} — ${audit.domain}`,
       html: `
         <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; background: #0a0a0a; color: #fff; padding: 32px; border-radius: 8px;">
@@ -78,6 +79,7 @@ export async function POST(
     // Send report link to the lead
     getResend()?.emails.send({
       from: "PulseCheck <noreply@dalyadvertising.com>",
+      replyTo: "marco@dalyadvertising.com",
       to: email,
       subject: `Your free digital audit for ${audit.domain} is ready`,
       html: `
